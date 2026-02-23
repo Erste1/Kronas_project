@@ -479,6 +479,144 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40p
 </div>
 </div>
 
+
+<!-- ANDROID SCREENSHOTS -->
+<div style="background:var(--bg)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">Android</span>
+    <h2 class="sec-title">Мобильное приложение</h2>
+    <p class="sec-sub">Красивый и удобный интерфейс на Android — передача одним касанием</p>
+  </div>
+
+  <div class="android-gallery">
+    <div class="and-thumb active" onclick="andGo(0)">
+      <img src="and7.png" alt="">
+      <span>Главный экран</span>
+    </div>
+    <div class="and-thumb" onclick="andGo(1)">
+      <img src="and8.png" alt="">
+      <span>Выбор файла</span>
+    </div>
+    <div class="and-thumb" onclick="andGo(2)">
+      <img src="and9.png" alt="">
+      <span>QR-код</span>
+    </div>
+    <div class="and-thumb" onclick="andGo(3)">
+      <img src="and4.png" alt="">
+      <span>Wi-Fi Direct</span>
+    </div>
+    <div class="and-thumb" onclick="andGo(4)">
+      <img src="and3.png" alt="">
+      <span>Авто-фото</span>
+    </div>
+    <div class="and-thumb" onclick="andGo(5)">
+      <img src="and2.png" alt="">
+      <span>Мёртвая зона</span>
+    </div>
+    <div class="and-thumb" onclick="andGo(6)">
+      <img src="and5.png" alt="">
+      <span>11 языков</span>
+    </div>
+    <div class="and-thumb" onclick="andGo(7)">
+      <img src="and1.png" alt="">
+      <span>Экран запуска</span>
+    </div>
+  </div>
+
+  <div class="and-stage-wrap">
+    <div class="and-phone-frame">
+      <div class="and-phone-screen">
+        <img src="and7.png" alt="Android экран" id="andMainImg" onclick="openLightbox(this.src)">
+      </div>
+    </div>
+    <div class="and-info">
+      <div class="and-caption" id="andCaption">
+        <h3>Отправить и получить файл</h3>
+        <p>Выберите файл — нажмите «Создать QR-код» — покажите другому устройству. Передача начнётся мгновенно.</p>
+      </div>
+      <div class="and-features-list">
+        <div class="and-feat" onclick="andGo(0)"><span class="and-dot" id="af0">●</span> Главный экран — отправка и получение</div>
+        <div class="and-feat" onclick="andGo(1)"><span class="and-dot" id="af1">●</span> Выбор файла и подготовка к отправке</div>
+        <div class="and-feat" onclick="andGo(2)"><span class="and-dot" id="af2">●</span> QR-код для передачи на другое устройство</div>
+        <div class="and-feat" onclick="andGo(3)"><span class="and-dot" id="af3">●</span> Wi-Fi Direct — без роутера и интернета</div>
+        <div class="and-feat" onclick="andGo(4)"><span class="and-dot" id="af4">●</span> Авто-синхронизация фото на ПК</div>
+        <div class="and-feat" onclick="andGo(5)"><span class="and-dot" id="af5">●</span> Режим мёртвой зоны — телефон как хотспот</div>
+        <div class="and-feat" onclick="andGo(6)"><span class="and-dot" id="af6">●</span> 11 языков интерфейса</div>
+        <div class="and-feat" onclick="andGo(7)"><span class="and-dot" id="af7">●</span> Красивый экран запуска</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<style>
+.android-gallery{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;
+}
+.and-thumb{
+  display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  transition:transform .2s,opacity .2s;opacity:.45;
+}
+.and-thumb img{
+  width:58px;height:100px;object-fit:cover;object-position:top;
+  border-radius:8px;border:2px solid transparent;transition:border-color .2s;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
+.and-thumb span{font-size:.6rem;color:var(--text3);text-align:center;max-width:60px;line-height:1.3}
+.and-thumb:hover{opacity:.75;transform:translateY(-3px)}
+.and-thumb.active{opacity:1;transform:translateY(-4px)}
+.and-thumb.active img{border-color:var(--accent)}
+.and-thumb.active span{color:var(--accent)}
+
+.and-stage-wrap{
+  display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center;
+  max-width:860px;margin:0 auto;
+}
+.and-phone-frame{
+  position:relative;
+  background:linear-gradient(145deg,#1a1d26,#12141c);
+  border-radius:40px;padding:14px 12px;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 30px 70px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.06);
+  flex-shrink:0;
+}
+.and-phone-frame::before{
+  content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  width:60px;height:5px;background:rgba(255,255,255,0.12);border-radius:3px;
+}
+.and-phone-screen{
+  border-radius:28px;overflow:hidden;
+  background:#000;aspect-ratio:9/19;
+}
+.and-phone-screen img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  display:block;cursor:zoom-in;
+  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .3s;
+}
+.and-info{display:flex;flex-direction:column;gap:20px}
+.and-caption h3{
+  font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;
+  margin-bottom:8px;letter-spacing:-.02em;
+}
+.and-caption p{font-size:.83rem;color:var(--text2);line-height:1.7}
+.and-features-list{display:flex;flex-direction:column;gap:4px}
+.and-feat{
+  font-size:.8rem;color:var(--text3);padding:8px 12px;border-radius:8px;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px;
+  border:1px solid transparent;
+}
+.and-feat:hover{color:var(--text);background:var(--bg2)}
+.and-feat.active-feat{color:var(--text);background:var(--bg2);border-color:var(--border);font-weight:600}
+.and-dot{color:var(--border2);font-size:.5rem;flex-shrink:0;transition:color .2s}
+.and-feat.active-feat .and-dot{color:var(--accent)}
+@media(max-width:700px){
+  .and-stage-wrap{grid-template-columns:1fr;justify-items:center}
+  .and-phone-frame{width:220px}
+  .and-info{width:100%}
+}
+</style>
+
 <!-- LIGHTBOX -->
 <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:1000;align-items:center;justify-content:center;padding:20px;cursor:zoom-out" onclick="closeLightbox()">
   <img id="lightbox-img" src="" style="max-width:92vw;max-height:92vh;border-radius:14px;box-shadow:0 40px 100px rgba(0,0,0,0.9);object-fit:contain">
@@ -849,6 +987,63 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40p
     ℹ️ <div><strong>Только Android и Windows.</strong> На данном этапе приложение доступно исключительно для Android (7.0+) и Windows (7/8/10/11). Поддержка других платформ не планируется в ближайшее время.</div>
   </div>
 
+  <!-- WIN7 CARE BANNER -->
+  <div class="win7-banner reveal">
+    <div class="win7-icon">🛡️</div>
+    <div class="win7-content">
+      <div class="win7-title">Мы помним о каждом пользователе</div>
+      <div class="win7-text">В 2026 году миллионы людей всё ещё работают на Windows 7. Мы это знаем — и специально поддерживаем <strong>Windows 7 SP1 32-bit и 64-bit</strong>. Никаких ограничений, никаких «обновитесь». Одно приложение работает на всём — от старенького офисного ПК до новейшего Windows 11.</div>
+      <div class="win7-tags">
+        <span class="win7-tag">✓ Windows 7 SP1 32-bit</span>
+        <span class="win7-tag">✓ Windows 7 SP1 64-bit</span>
+        <span class="win7-tag">✓ Windows 8 / 8.1</span>
+        <span class="win7-tag">✓ Windows 10</span>
+        <span class="win7-tag">✓ Windows 11</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+  .win7-banner{
+    display:flex;gap:20px;align-items:flex-start;
+    background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(45,212,115,0.06));
+    border:1px solid rgba(79,142,247,0.25);
+    border-radius:16px;padding:24px 28px;margin-bottom:28px;
+    position:relative;overflow:hidden;
+  }
+  .win7-banner::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,transparent 60%,rgba(45,212,115,0.04));
+    pointer-events:none;
+  }
+  .win7-icon{
+    font-size:2.4rem;flex-shrink:0;
+    filter:drop-shadow(0 0 12px rgba(79,142,247,0.4));
+  }
+  .win7-title{
+    font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;
+    margin-bottom:8px;letter-spacing:-.01em;
+    background:linear-gradient(135deg,var(--text),var(--accent));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .win7-text{
+    font-size:.83rem;color:var(--text2);line-height:1.75;margin-bottom:14px;
+  }
+  .win7-text strong{color:var(--text);-webkit-text-fill-color:var(--text)}
+  .win7-tags{display:flex;flex-wrap:wrap;gap:8px}
+  .win7-tag{
+    font-size:.7rem;font-weight:600;
+    padding:4px 12px;border-radius:20px;
+    background:rgba(45,212,115,0.08);
+    border:1px solid rgba(45,212,115,0.25);
+    color:var(--green);letter-spacing:.02em;
+  }
+  @media(max-width:540px){
+    .win7-banner{flex-direction:column;gap:12px}
+    .win7-icon{font-size:1.8rem}
+  }
+  </style>
+
   <div class="dl-grid">
     <!-- WINDOWS -->
     <div class="dlc win reveal rd1">
@@ -970,6 +1165,41 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40p
 </footer>
 
 <script>
+// Android gallery
+const andData = [
+  {img:'and7.png', title:'Отправить и получить файл', desc:'Главный экран — выберите файл для отправки или нажмите «Сканировать QR» для получения.'},
+  {img:'and8.png', title:'Выбор файла', desc:'Выберите любой файл — фото, видео, документ. Нет ограничений по размеру.'},
+  {img:'and9.png', title:'QR-код для передачи', desc:'После выбора файла приложение генерирует QR-код. Покажите другому устройству — передача начнётся мгновенно.'},
+  {img:'and4.png', title:'Wi-Fi Direct', desc:'Передача без роутера и интернета. Телефон подключается напрямую к другому устройству.'},
+  {img:'and3.png', title:'Авто-синхронизация фото', desc:'Сделал фото — через секунды оно уже на ПК. Как AirDrop, только для Android + Windows.'},
+  {img:'and2.png', title:'Режим мёртвой зоны', desc:'Нет Wi-Fi? Телефон становится точкой доступа. Работает в самолёте, кафе, поле — везде.'},
+  {img:'and5.png', title:'11 языков интерфейса', desc:'Выберите язык из 11 доступных. Переключение мгновенное, без перезапуска.'},
+  {img:'and1.png', title:'Экран запуска', desc:'Стильный экран запуска. Приложение готово к работе с первой секунды.'},
+];
+let andActive = 0;
+
+function andGo(idx) {
+  andActive = idx;
+  const img = document.getElementById('andMainImg');
+  img.style.opacity = '0';
+  img.style.transform = 'scale(0.97)';
+  setTimeout(() => {
+    img.src = andData[idx].img;
+    img.style.opacity = '1';
+    img.style.transform = 'scale(1)';
+  }, 220);
+  const cap = document.getElementById('andCaption');
+  cap.style.opacity = '0';
+  setTimeout(() => {
+    cap.innerHTML = `<h3>${andData[idx].title}</h3><p>${andData[idx].desc}</p>`;
+    cap.style.opacity = '1';
+  }, 220);
+  document.querySelectorAll('.and-thumb').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.and-feat').forEach((f,i) => f.classList.toggle('active-feat', i===idx));
+}
+document.getElementById('andCaption').style.transition = 'opacity .25s';
+document.querySelectorAll('.and-feat')[0].classList.add('active-feat');
+
 // Carousel
 const carouselSlides = [
   {src:'screen2.png', caption:'Главный экран: отправка файлов, QR-код для Android, обнаружение соседних ПК'},
