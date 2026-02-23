@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR File Share — Передача файлов без интернета</title>
+<meta name="description" content="Передача файлов между Android и Windows без интернета — через QR-код и Wi-Fi. AES-256 шифрование, mesh-сеть, чат, синхронизация фото.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',system-ui,sans-serif;background:#0d1117;color:#e6edf3;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
+  --border:#30363d;--border2:#3d444d;
+  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+  --green:#3fb950;--gdim:rgba(63,185,80,0.15);
+  --blue:#58a6ff;--bdim:rgba(88,166,255,0.12);
+  --purple:#bc8cff;--pdim:rgba(188,140,255,0.12);
+  --orange:#f0883e;--odim:rgba(240,136,62,0.12);
+  --red:#ff7b72;
+}
+nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem}
+.nav-logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#238636,#1f6feb);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.nav-links{display:flex;gap:2px}
+.nav-link{padding:6px 14px;border-radius:6px;font-size:0.82rem;font-weight:500;color:var(--text2);transition:all .15s}
+.nav-link:hover{color:var(--text);background:var(--bg3)}
+.nav-gh{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:0.8rem;font-weight:600;border:1px solid var(--border2);color:var(--text);background:var(--bg3);transition:all .2s}
+.nav-gh:hover{background:var(--border);border-color:var(--text3)}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;padding:80px 24px 64px;text-align:center;background:radial-gradient(ellipse 100% 70% at 50% -5%,rgba(31,111,235,.13) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 80% 60%,rgba(63,185,80,.06) 0%,transparent 50%)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(63,185,80,.3);background:rgba(63,185,80,.08);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:600;color:var(--green);letter-spacing:.03em;margin-bottom:20px}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px;background:linear-gradient(135deg,#e6edf3 30%,#8b949e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.95rem,2.5vw,1.2rem);color:var(--text2);max-width:620px;margin:0 auto 40px;line-height:1.65}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:8px;font-size:.87rem;font-weight:600;transition:all .2s;cursor:pointer;border:none;font-family:inherit;letter-spacing:.01em}
+.btn-lg{padding:14px 28px;font-size:.95rem}
+.btn-green{background:#238636;color:#fff;box-shadow:0 4px 16px rgba(35,134,54,.3)}
+.btn-green:hover{background:#2ea043;transform:translateY(-1px);box-shadow:0 6px 24px rgba(46,160,67,.4)}
+.btn-rus{background:linear-gradient(135deg,#0050cf,#003fab);color:#fff;box-shadow:0 4px 14px rgba(0,80,207,.3)}
+.btn-rus:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(0,80,207,.4)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn-outline:hover{background:var(--bg3);border-color:var(--text3)}
+.platform-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.plat{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;font-size:.78rem;font-weight:600;border:1px solid var(--border);background:var(--bg2);transition:all .2s}
+.plat.win{border-color:rgba(88,166,255,.3);color:var(--blue)}.plat.win:hover{background:var(--bdim)}
+.plat.and{border-color:rgba(63,185,80,.3);color:var(--green)}.plat.and:hover{background:var(--gdim)}
+.plat.rus{border-color:rgba(0,80,207,.4);color:#60a5fa}.plat.rus:hover{background:rgba(0,80,207,.1)}
+.stats-bar{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:680px;margin:0 auto;overflow:hidden}
+.stat{flex:1;padding:20px 16px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.sv{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;line-height:1}
+.sl{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;font-weight:500}
+
+/* SECTIONS */
+.sec{padding:68px 24px;max-width:1080px;margin:0 auto}
+.sec-head{text-align:center;margin-bottom:48px}
+.eyebrow{display:block;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+.sec-title{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+.sec-sub{color:var(--text2);font-size:.95rem;max-width:540px;margin:0 auto;line-height:1.7}
+hr.div{border:none;border-top:1px solid var(--border);margin:0}
+
+/* HOW IT WORKS */
+.mode-label{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;margin-top:28px}
+.mode-label span{font-size:.85rem;font-weight:700}
+.mode-label small{font-size:.72rem;color:var(--text3);margin-left:auto}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.step-c{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:26px 22px;transition:border-color .2s,transform .2s}
+.step-c:hover{border-color:var(--border2);transform:translateY(-2px)}
+.step-n{width:34px;height:34px;border-radius:8px;background:var(--bdim);border:1px solid rgba(88,166,255,.25);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:var(--blue);margin-bottom:14px}
+.step-ico{font-size:1.75rem;margin-bottom:10px}
+.step-t{font-size:.92rem;font-weight:700;margin-bottom:6px}
+.step-d{font-size:.8rem;color:var(--text2);line-height:1.6}
+
+/* BIG FEATURE */
+.big-feat{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:36px;display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;margin-bottom:14px}
+.big-feat h3{font-size:1.45rem;font-weight:800;margin-bottom:12px;letter-spacing:-.02em}
+.big-feat p{color:var(--text2);font-size:.85rem;line-height:1.7;margin-bottom:14px}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{padding:3px 11px;border-radius:20px;font-size:.7rem;font-weight:600;letter-spacing:.03em;border:1px solid}
+.tg{border-color:rgba(63,185,80,.4);color:var(--green);background:var(--gdim)}
+.tb{border-color:rgba(88,166,255,.4);color:var(--blue);background:var(--bdim)}
+.tp{border-color:rgba(188,140,255,.4);color:var(--purple);background:var(--pdim)}
+.to{border-color:rgba(240,136,62,.4);color:var(--orange);background:var(--odim)}
+.mesh-box{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:22px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text2);line-height:2.1}
+.mn{display:inline-block;background:var(--bg2);border:1px solid var(--border2);border-radius:5px;padding:1px 9px;color:var(--text);font-weight:500}
+.ma{color:var(--blue)}
+.mok{color:var(--green)}
+
+/* FEATURES GRID */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.feat-c{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;gap:14px;transition:border-color .2s,transform .15s}
+.feat-c:hover{border-color:var(--border2);transform:translateY(-1px)}
+.ficon{width:42px;height:42px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.25rem}
+.fig{background:var(--gdim)}.fib{background:var(--bdim)}.fip{background:var(--pdim)}.fio{background:var(--odim)}.fir{background:rgba(255,123,114,.12)}
+.ft{font-size:.88rem;font-weight:700;margin-bottom:4px}
+.fd{font-size:.78rem;color:var(--text2);line-height:1.6}
+
+/* BENCHMARK */
+.bwrap{overflow-x:auto}
+table.bench{width:100%;border-collapse:collapse;font-size:.8rem}
+table.bench th{padding:11px 14px;text-align:left;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);background:var(--bg2);border-bottom:1px solid var(--border);white-space:nowrap}
+table.bench td{padding:13px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
+table.bench tr:last-child td{border-bottom:none}
+table.bench tr:hover td{background:rgba(255,255,255,.02)}
+.bapp{font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px}
+.bhl td{background:rgba(63,185,80,.04);border-bottom:1px solid rgba(63,185,80,.12)}
+.bhl:hover td{background:rgba(63,185,80,.07)}
+.bpill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.pyes{background:var(--gdim);border:1px solid rgba(63,185,80,.3);color:var(--green)}
+.pno{background:rgba(255,123,114,.08);border:1px solid rgba(255,123,114,.2);color:var(--red)}
+.ppar{background:var(--odim);border:1px solid rgba(240,136,62,.3);color:var(--orange)}
+.bar-cell{min-width:130px}
+.bar-w{display:flex;align-items:center;gap:9px}
+.bar-t{flex:1;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.bar-f{height:100%;border-radius:99px;transition:width 1.2s cubic-bezier(.23,1,.32,1)}
+.bv{font-size:.72rem;font-weight:600;white-space:nowrap;min-width:30px;text-align:right}
+.cgood{color:var(--green)}.cok{color:var(--orange)}.cbad{color:var(--red)}
+
+/* CRYPTO */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.cc{background:var(--bg2);border:1px solid rgba(188,140,255,.2);border-radius:12px;padding:20px;text-align:center}
+.cico{font-size:2rem;margin-bottom:7px}
+.cname{font-size:.8rem;font-weight:700;margin-bottom:4px;color:var(--purple)}
+.cdesc{font-size:.7rem;color:var(--text3);line-height:1.5}
+
+/* PORTS */
+.ports-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:11px}
+.port-c{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.pnum{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:500;color:var(--blue);background:var(--bdim);border:1px solid rgba(88,166,255,.2);border-radius:6px;padding:3px 9px;flex-shrink:0}
+.ppr{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:2px}
+.pdesc{font-size:.78rem;font-weight:600;color:var(--text)}
+.psub{font-size:.7rem;color:var(--text3)}
+
+/* DOWNLOAD */
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-bottom:28px}
+.dlc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px;transition:border-color .2s,transform .2s}
+.dlc:hover{transform:translateY(-3px)}
+.dlc.feat{border-color:rgba(63,185,80,.4);background:linear-gradient(145deg,rgba(35,134,54,.08) 0%,var(--bg2) 60%)}
+.dlc.andr{border-color:rgba(63,185,80,.25)}
+.dlc.rusc{border-color:rgba(0,80,207,.3)}
+.dlc-ico{font-size:2.3rem}
+.dlc-t{font-size:1.15rem;font-weight:800;letter-spacing:-.01em}
+.dlc-d{font-size:.8rem;color:var(--text2);line-height:1.6;flex:1}
+.dlc-meta{display:flex;flex-wrap:wrap;gap:7px}
+.dm{font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--text3);background:var(--bg3);border-radius:4px;padding:2px 7px}
+.dm.g{color:var(--green);background:var(--gdim)}
+.dl-acts{display:flex;flex-direction:column;gap:8px}
+.dlb{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:8px;font-size:.83rem;font-weight:600;transition:all .2s;cursor:pointer;border:none;font-family:inherit}
+.dlb-g{background:#238636;color:#fff;box-shadow:0 2px 8px rgba(35,134,54,.3)}
+.dlb-g:hover{background:#2ea043;transform:translateY(-1px);box-shadow:0 4px 16px rgba(46,160,67,.4)}
+.dlb-o{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+.dlb-o:hover{background:var(--border);border-color:var(--text3)}
+.dlb-r{background:linear-gradient(135deg,#0050cf,#003fab);color:#fff;box-shadow:0 2px 8px rgba(0,80,207,.3)}
+.dlb-r:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,80,207,.4)}
+.dlb-a{background:linear-gradient(135deg,#34a853,#0f9d58);color:#fff;box-shadow:0 2px 8px rgba(52,168,83,.3)}
+.dlb-a:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(52,168,83,.4)}
+
+/* REQ */
+.req-g{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.req-c{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px}
+.req-t{font-size:.88rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.req-l{list-style:none;display:flex;flex-direction:column;gap:7px}
+.req-l li{display:flex;align-items:baseline;gap:7px;font-size:.8rem;color:var(--text2)}
+.req-l li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0}
+.req-l li.w::before{content:"!";color:var(--orange)}
+
+/* FAQ */
+.faq-l{display:flex;flex-direction:column;gap:10px;max-width:760px;margin:0 auto}
+.faq-i{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.faq-q{padding:16px 20px;font-size:.86rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;transition:background .15s;user-select:none}
+.faq-q:hover{background:var(--bg3)}
+.faq-ar{font-size:.65rem;color:var(--text3);transition:transform .2s;flex-shrink:0}
+.faq-i.open .faq-ar{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.faq-i.open .faq-a{max-height:400px}
+.faq-ai{padding:0 20px 16px;border-top:1px solid var(--border);padding-top:14px;font-size:.8rem;color:var(--text2);line-height:1.75}
+code{font-family:'JetBrains Mono',monospace;font-size:.8em;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--blue)}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:36px 24px;text-align:center}
+.ft-logo{font-size:1.05rem;font-weight:800;margin-bottom:7px}
+.ft-desc{font-size:.78rem;color:var(--text3);margin-bottom:18px}
+.ft-links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.ft-link{font-size:.76rem;color:var(--text3);transition:color .15s}.ft-link:hover{color:var(--blue)}
+.ft-copy{font-size:.7rem;color:var(--text3)}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+.rd1{transition-delay:.08s}.rd2{transition-delay:.16s}.rd3{transition-delay:.24s}
+@media(max-width:760px){
+  nav .nav-links{display:none}
+  .big-feat{grid-template-columns:1fr;gap:20px}
+  .req-g{grid-template-columns:1fr}
+  .stats-bar{flex-direction:column}
+  .stat{border-right:none;border-bottom:1px solid var(--border)}
+  .stat:last-child{border-bottom:none}
+}
+@media(max-width:480px){.sec{padding:44px 14px}.hero{padding:52px 14px 40px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">📲</div>
+    QR File Share
+  </div>
+  <div class="nav-links">
+    <a href="#how" class="nav-link">Как работает</a>
+    <a href="#features" class="nav-link">Возможности</a>
+    <a href="#bench" class="nav-link">Сравнение</a>
+    <a href="#download" class="nav-link">Скачать</a>
+  </div>
+  <a href="https://github.com/YOUR_USERNAME/QRFileShare" target="_blank" class="nav-gh">⭐ GitHub</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="hero-dot"></span>v3.1 — Mesh Relay · Голосовой чат · Игры</div>
+  <h1>Передача файлов без<br>интернета — мгновенно</h1>
+  <p class="hero-sub">Отправляйте файлы между Android и Windows через QR-код и Wi-Fi. Без облака, без аккаунтов, без ограничений. AES-256 шифрование и mesh-сеть.</p>
+  <div class="hero-btns">
+    <a href="#download" class="btn btn-green btn-lg">⬇ Скачать для Windows</a>
+    <a href="https://www.rustore.ru/catalog/app/com.example.qrfileshare" target="_blank" class="btn btn-rus btn-lg">🛒 RuStore — Android</a>
+    <a href="#how" class="btn btn-outline btn-lg">Как это работает?</a>
+  </div>
+  <div class="platform-row">
+    <div class="plat win">🖥 Windows 7 / 8 / 10 / 11</div>
+    <div class="plat and">📱 Android 5.0+</div>
+    <div class="plat rus">🛒 Доступно в RuStore</div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="sv" style="color:var(--green)">0</div><div class="sl">Зависимостей от интернета</div></div>
+    <div class="stat"><div class="sv" style="color:var(--blue)">∞</div><div class="sl">Ограничение по размеру файлов</div></div>
+    <div class="stat"><div class="sv" style="color:var(--purple)">256</div><div class="sl">AES бит шифрование</div></div>
+    <div class="stat"><div class="sv" style="color:var(--orange)">11+</div><div class="sl">Языков интерфейса</div></div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- HOW IT WORKS -->
+<div id="how" style="background:var(--bg)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">Как это работает</span>
+    <h2 class="sec-title">Три шага — и файл передан</h2>
+    <p class="sec-sub">Никакой настройки, никаких аккаунтов. Просто Wi-Fi и QR-код.</p>
+  </div>
+
+  <div class="mode-label"><span>🖥➡📱</span><span>ПК → Android</span><small>Отправить файл с компьютера на телефон</small></div>
+  <div class="steps">
+    <div class="step-c reveal rd1"><div class="step-n">1</div><div class="step-ico">📁</div><div class="step-t">Выберите файл на ПК</div><div class="step-d">Перетащите файл или папку в приложение. Поддерживаются любые форматы — авто-ZIP для папок.</div></div>
+    <div class="step-c reveal rd2"><div class="step-n">2</div><div class="step-ico">📷</div><div class="step-t">QR-код появится на экране</div><div class="step-d">Приложение генерирует уникальный QR-код с адресом и портом. Всё только в локальной сети.</div></div>
+    <div class="step-c reveal rd3"><div class="step-n">3</div><div class="step-ico">✅</div><div class="step-t">Сканируйте на Android</div><div class="step-d">Откройте QR File Share на телефоне → Scan → файл начнёт загружаться мгновенно.</div></div>
+  </div>
+
+  <div class="mode-label"><span>📱➡🖥</span><span>Android → ПК</span><small>Отправить файл с телефона на компьютер</small></div>
+  <div class="steps">
+    <div class="step-c reveal rd1"><div class="step-n">1</div><div class="step-ico">🖥</div><div class="step-t">«Принять» на ПК</div><div class="step-d">Нажмите «Принять от Android» в приложении. ПК покажет QR-код с адресом получения.</div></div>
+    <div class="step-c reveal rd2"><div class="step-n">2</div><div class="step-ico">📤</div><div class="step-t">Отправьте с телефона</div><div class="step-d">В Android-приложении выберите файл → «Отправить на ПК» → Scan QR. Передача начнётся сразу.</div></div>
+    <div class="step-c reveal rd3"><div class="step-n">3</div><div class="step-ico">📂</div><div class="step-t">Файл сохранён на ПК</div><div class="step-d">Файл автоматически сохраняется в папку Загрузки. История всех передач сохраняется.</div></div>
+  </div>
+
+  <div class="mode-label"><span>🖥↔🖥</span><span>ПК → ПК</span><small>Передача между компьютерами в локальной сети</small></div>
+  <div class="steps">
+    <div class="step-c reveal rd1"><div class="step-n">1</div><div class="step-ico">🔍</div><div class="step-t">Автообнаружение по сети</div><div class="step-d">Все ПК с приложением в одной сети видят друг друга автоматически через UDP broadcast.</div></div>
+    <div class="step-c reveal rd2"><div class="step-n">2</div><div class="step-ico">🔐</div><div class="step-t">PIN-сопряжение</div><div class="step-d">При первом подключении нужно подтвердить PIN. После — компьютеры запоминают друг друга.</div></div>
+    <div class="step-c reveal rd3"><div class="step-n">3</div><div class="step-ico">⚡</div><div class="step-t">Передача со скоростью сети</div><div class="step-d">AES-256-GCM + ECDH шифрование. Скорость — только ваш Wi-Fi/LAN, никакого overhead.</div></div>
+  </div>
+</div>
+</div>
+
+<hr class="div">
+
+<!-- FEATURES -->
+<div id="features" style="background:var(--bg)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">Возможности</span>
+    <h2 class="sec-title">Всё для работы в локальной сети</h2>
+    <p class="sec-sub">От простой передачи файлов до голосового чата и mesh-маршрутизации</p>
+  </div>
+
+  <div class="big-feat reveal">
+    <div>
+      <h3>🌐 Mesh-сеть — файлы через несколько ПК</h3>
+      <p>Если получатель находится в другой Wi-Fi-сети — сообщение автоматически маршрутизируется через другие ПК. Каждый узел знает своих соседей и строит оптимальный маршрут (BFS). Голосовой чат тоже поддерживает relay — голос проходит через промежуточный узел без декодирования.</p>
+      <div class="tags">
+        <span class="tag tb">UDP / TCP relay</span>
+        <span class="tag tg">BFS маршрутизация</span>
+        <span class="tag tp">Mesh topology</span>
+        <span class="tag to">Авто-переобнаружение</span>
+      </div>
+    </div>
+    <div class="mesh-box">
+      <div style="margin-bottom:10px;color:var(--text);font-weight:500">Схема маршрутизации:</div>
+      <div><span class="mn">ПК-А (WiFi-1)</span> <span class="ma">──UDP──▶</span> <span class="mn">ПК-Б (bridge)</span> <span class="ma">──UDP──▶</span> <span class="mn">ПК-В (WiFi-2)</span></div>
+      <div style="margin-top:12px;color:var(--text3);font-size:.68rem">ПК-Б пересылает пакет, не декодируя.<br>UI показывает: <span class="mok">📶 прямой</span> или <span style="color:var(--blue)">🌐 Mesh →192.168.x.x</span></div>
+      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px;display:flex;flex-wrap:wrap;gap:6px">
+        <span style="background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;color:var(--blue);font-size:.67rem">47777 UDP — Discovery</span>
+        <span style="background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;color:var(--blue);font-size:.67rem">47780 TCP — Mesh</span>
+        <span style="background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;color:var(--blue);font-size:.67rem">47781 UDP — Голос</span>
+        <span style="background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:2px 8px;color:var(--blue);font-size:.67rem">47783 TCP — Голос fallback</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="feat-grid reveal">
+    <div class="feat-c"><div class="ficon fig">🔒</div><div><div class="ft">Сквозное шифрование AES-256-GCM + ECDH</div><div class="fd">ECDH P-256 для обмена ключами. Каждая сессия — уникальный ключ. Совместимо с Android-частью через BouncyCastle.</div></div></div>
+    <div class="feat-c"><div class="ficon fib">💬</div><div><div class="ft">Зашифрованный чат с историей</div><div class="fd">Групповой и личный чат, файлы в чате, переименование сессий, светлая/тёмная тема, эмодзи-аватары ПК.</div></div></div>
+    <div class="feat-c"><div class="ficon fip">🎙</div><div><div class="ft">Голосовой чат (Discord-стиль)</div><div class="fd">UDP 47781, 16kHz PCM, 20ms фреймы, VAD (не отправляет тишину), jitter-буфер, анимация микрофона. Mesh relay.</div></div></div>
+    <div class="feat-c"><div class="ficon fio">📸</div><div><div class="ft">Автосинхронизация фото с Android</div><div class="fd">Новые фото с телефона автоматически появляются на ПК в реальном времени. Порт 47790 TCP.</div></div></div>
+    <div class="feat-c"><div class="ficon fig">📁</div><div><div class="ft">Любые файлы и папки без ограничений</div><div class="fd">Папки автоматически пакуются в ZIP. Множественная отправка. Сохраняется структура директорий.</div></div></div>
+    <div class="feat-c"><div class="ficon fib">🎮</div><div><div class="ft">Игровые функции</div><div class="fd">TCP инвайты в игры, таблица счёта с эмодзи, статусы «В игре / Отошёл», всплывающие уведомления (15 сек).</div></div></div>
+    <div class="feat-c"><div class="ficon fio">👁</div><div><div class="ft">Скрытие IP в интерфейсе</div><div class="fd">Кнопка «глазик» скрывает IP по всему UI — показывает <code>192.168.1.***</code> при стриме или записи экрана.</div></div></div>
+    <div class="feat-c"><div class="ficon fip">🖥</div><div><div class="ft">Windows 7 / 8 / 10 / 11 — один EXE</div><div class="fd">.NET Framework 4.8, x86/x64. Без установки. Win7: WinMM P/Invoke (winmm.dll) для голоса.</div></div></div>
+    <div class="feat-c"><div class="ficon fig">🌍</div><div><div class="ft">11 языков встроено</div><div class="fd">RU, EN, DE, FR, ES, ZH, JA, KO, PT, AR, HI. Переключение без перезапуска.</div></div></div>
+  </div>
+</div>
+</div>
+
+<hr class="div">
+
+<!-- BENCHMARK -->
+<div id="bench" style="background:var(--bg2)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">Сравнение</span>
+    <h2 class="sec-title">QR File Share vs. аналоги</h2>
+    <p class="sec-sub">Объективное сравнение с популярными инструментами для передачи файлов по локальной сети</p>
+  </div>
+  <div class="bwrap">
+    <table class="bench" style="background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+      <thead>
+        <tr>
+          <th style="width:150px">Приложение</th>
+          <th>Без инт.</th>
+          <th>Шифрование</th>
+          <th>ПК↔Android</th>
+          <th>Mesh</th>
+          <th>Голос</th>
+          <th>Авто-фото</th>
+          <th>Чат</th>
+          <th>Win 7</th>
+          <th class="bar-cell">Скорость</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bhl">
+          <td><div class="bapp" style="color:var(--green)">📲 QR File Share</div></td>
+          <td><span class="bpill pyes">✓ Да</span></td>
+          <td><span class="bpill pyes">AES-256</span></td>
+          <td><span class="bpill pyes">✓ QR</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pyes">✓ Авто</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pyes">✓ x86/64</span></td>
+          <td class="bar-cell"><div class="bar-w"><div class="bar-t"><div class="bar-f cgood" style="width:90%;background:var(--green)"></div></div><span class="bv cgood">≈ Wi-Fi</span></div></td>
+        </tr>
+        <tr>
+          <td><div class="bapp">📁 SHAREit</div></td>
+          <td><span class="bpill pyes">✓ Да</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill ppar">Частично</span></td>
+          <td class="bar-cell"><div class="bar-w"><div class="bar-t"><div class="bar-f cok" style="width:76%;background:var(--orange)"></div></div><span class="bv cok">Быстро</span></div></td>
+        </tr>
+        <tr>
+          <td><div class="bapp">📡 Snapdrop</div></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill ppar">TLS</span></td>
+          <td><span class="bpill pyes">✓ Веб</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pyes">Браузер</span></td>
+          <td class="bar-cell"><div class="bar-w"><div class="bar-t"><div class="bar-f cok" style="width:58%;background:var(--orange)"></div></div><span class="bv cok">Средне</span></div></td>
+        </tr>
+        <tr>
+          <td><div class="bapp">💻 KDE Connect</div></td>
+          <td><span class="bpill pyes">✓ Да</span></td>
+          <td><span class="bpill ppar">RSA/TLS</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill ppar">Вручную</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td class="bar-cell"><div class="bar-w"><div class="bar-t"><div class="bar-f cok" style="width:72%;background:var(--orange)"></div></div><span class="bv cok">Быстро</span></div></td>
+        </tr>
+        <tr>
+          <td><div class="bapp">🌀 Xender</div></td>
+          <td><span class="bpill pyes">✓ Да</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill ppar">Базовый</span></td>
+          <td><span class="bpill ppar">Лимит.</span></td>
+          <td class="bar-cell"><div class="bar-w"><div class="bar-t"><div class="bar-f cok" style="width:74%;background:var(--orange)"></div></div><span class="bv cok">Быстро</span></div></td>
+        </tr>
+        <tr>
+          <td><div class="bapp">☁️ Google Drive</div></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pyes">TLS</span></td>
+          <td><span class="bpill pyes">✓ Есть</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill ppar">Только фото</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pyes">Браузер</span></td>
+          <td class="bar-cell"><div class="bar-w"><div class="bar-t"><div class="bar-f cbad" style="width:32%;background:var(--red)"></div></div><span class="bv cbad">Интернет</span></div></td>
+        </tr>
+        <tr>
+          <td><div class="bapp">📦 AirDrop</div></td>
+          <td><span class="bpill pyes">✓ Да</span></td>
+          <td><span class="bpill pyes">TLS</span></td>
+          <td><span class="bpill pno">iOS only</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td><span class="bpill pno">✗ Нет</span></td>
+          <td class="bar-cell"><div class="bar-w"><div class="bar-t"><div class="bar-f cgood" style="width:93%;background:var(--green)"></div></div><span class="bv cgood">Очень быстро</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.7rem;color:var(--text3);text-align:center;margin-top:12px">* Данные на основе публичных источников. Скорость зависит от сети.</p>
+</div>
+</div>
+
+<hr class="div">
+
+<!-- CRYPTO -->
+<div style="background:var(--bg)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">Безопасность</span>
+    <h2 class="sec-title">Военный уровень шифрования</h2>
+    <p class="sec-sub">Все данные зашифрованы до отправки. Никто в сети не может перехватить содержимое.</p>
+  </div>
+  <div class="cg">
+    <div class="cc"><div class="cico">🔑</div><div class="cname">ECDH P-256</div><div class="cdesc">Обмен ключами. Каждая сессия — уникальный ключ. Совместимо Android↔Windows.</div></div>
+    <div class="cc"><div class="cico">🔐</div><div class="cname">AES-256-GCM</div><div class="cdesc">Шифрование с аутентификацией. Невозможно изменить данные незаметно.</div></div>
+    <div class="cc"><div class="cico">📦</div><div class="cname">BouncyCastle</div><div class="cdesc">Криптобиблиотека. Совместима с .NET 4.8 и Android. Открытый исходный код.</div></div>
+    <div class="cc"><div class="cico">🔏</div><div class="cname">PIN-паросочетание</div><div class="cdesc">Первое подключение ПК↔ПК требует PIN. Хранится SHA-256 хэш.</div></div>
+  </div>
+</div>
+</div>
+
+<hr class="div">
+
+<!-- PORTS -->
+<div style="background:var(--bg2)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">Сетевые порты</span>
+    <h2 class="sec-title">Используемые порты</h2>
+    <p class="sec-sub">Правила брандмауэра добавляются автоматически при первом запуске.</p>
+  </div>
+  <div class="ports-g">
+    <div class="port-c"><div><div class="pnum">47777</div><div class="ppr">UDP</div></div><div><div class="pdesc">Обнаружение устройств</div><div class="psub">UDP broadcast по всем интерфейсам</div></div></div>
+    <div class="port-c"><div><div class="pnum">47778</div><div class="ppr">TCP</div></div><div><div class="pdesc">Передача файлов ПК↔ПК</div><div class="psub">AES-256-CBC + RSA handshake</div></div></div>
+    <div class="port-c"><div><div class="pnum">47779</div><div class="ppr">TCP</div></div><div><div class="pdesc">Чат между устройствами</div><div class="psub">Текст, файлы, группа / личный</div></div></div>
+    <div class="port-c"><div><div class="pnum">47780</div><div class="ppr">TCP</div></div><div><div class="pdesc">Mesh-сеть</div><div class="psub">Пересылка через промежуточные узлы</div></div></div>
+    <div class="port-c"><div><div class="pnum">47781</div><div class="ppr">UDP</div></div><div><div class="pdesc">Голосовой чат</div><div class="psub">16kHz PCM, прямой + Mesh relay</div></div></div>
+    <div class="port-c"><div><div class="pnum">47782</div><div class="ppr">TCP</div></div><div><div class="pdesc">Игровые события</div><div class="psub">Инвайты, счёт, статусы игроков</div></div></div>
+    <div class="port-c"><div><div class="pnum">47783</div><div class="ppr">TCP</div></div><div><div class="pdesc">Голос — TCP fallback</div><div class="psub">Когда UDP заблокирован роутером</div></div></div>
+    <div class="port-c"><div><div class="pnum">47790</div><div class="ppr">TCP</div></div><div><div class="pdesc">Синхронизация фото</div><div class="psub">Авто-приём новых фото с Android</div></div></div>
+    <div class="port-c"><div><div class="pnum">8765</div><div class="ppr">TCP</div></div><div><div class="pdesc">QR-передача (Android→ПК)</div><div class="psub">HTTP-сервер для QR получения</div></div></div>
+  </div>
+</div>
+</div>
+
+<hr class="div">
+
+<!-- DOWNLOAD -->
+<div id="download" style="background:var(--bg)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">Скачать</span>
+    <h2 class="sec-title">Доступно для Windows и Android</h2>
+    <p class="sec-sub">Один файл — никакой установки. Запустите и начните пользоваться.</p>
+  </div>
+
+  <div class="dl-grid">
+    <div class="dlc feat reveal rd1">
+      <div class="dlc-ico">🖥</div>
+      <div class="dlc-t">Windows (PC)</div>
+      <div class="dlc-d">Один EXE — работает на Windows 7, 8, 10, 11. Никакой установки. .NET Framework 4.8 уже встроён в Win 10/11.</div>
+      <div class="dlc-meta">
+        <span class="dm g">v3.1</span>
+        <span class="dm">.NET 4.8</span>
+        <span class="dm">x86 / x64</span>
+        <span class="dm">~5 MB</span>
+        <span class="dm">Без установки</span>
+      </div>
+      <div class="dl-acts">
+        <a href="https://github.com/YOUR_USERNAME/QRFileShare/releases/latest/download/QRFileSharePC.exe" class="dlb dlb-g" download>⬇ Скачать QRFileSharePC.exe</a>
+        <a href="https://github.com/YOUR_USERNAME/QRFileShare/releases" target="_blank" class="dlb dlb-o">📋 Все версии на GitHub</a>
+      </div>
+    </div>
+
+    <div class="dlc rusc reveal rd2">
+      <div class="dlc-ico">🛒</div>
+      <div class="dlc-t">Android — RuStore</div>
+      <div class="dlc-d">Официальный российский магазин. Рекомендован для пользователей из России. Автообновления, безопасная проверка.</div>
+      <div class="dlc-meta">
+        <span class="dm g">v3.1</span>
+        <span class="dm">Android 5.0+</span>
+        <span class="dm">RuStore</span>
+      </div>
+      <div class="dl-acts">
+        <a href="https://www.rustore.ru/catalog/app/com.example.qrfileshare" target="_blank" class="dlb dlb-r">🛒 Открыть в RuStore</a>
+      </div>
+    </div>
+
+    <div class="dlc andr reveal rd3">
+      <div class="dlc-ico">📱</div>
+      <div class="dlc-t">Android — APK</div>
+      <div class="dlc-d">Прямая установка APK. Для устройств без Google Play и RuStore. Разрешите установку из неизвестных источников.</div>
+      <div class="dlc-meta">
+        <span class="dm g">v3.1</span>
+        <span class="dm">Android 5.0+</span>
+        <span class="dm">Прямой APK</span>
+      </div>
+      <div class="dl-acts">
+        <a href="https://github.com/YOUR_USERNAME/QRFileShare/releases/latest/download/QRFileShare.apk" class="dlb dlb-a" download>📱 Скачать APK</a>
+        <div style="font-size:.7rem;color:var(--text3);text-align:center;padding:3px 0">Настройки → Безопасность → Неизвестные источники ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="req-g reveal">
+    <div class="req-c">
+      <div class="req-t">🖥 Требования Windows</div>
+      <ul class="req-l">
+        <li>Windows 7 SP1 / 8 / 10 / 11</li>
+        <li>.NET Framework 4.8 (встроён в Win 10/11)</li>
+        <li class="w">Win 7: установите .NET 4.8 Runtime (~65 MB)</li>
+        <li>Wi-Fi или LAN-сеть с другими устройствами</li>
+        <li>Брандмауэр настраивается автоматически</li>
+        <li>32-bit (x86) и 64-bit (x64) — один файл</li>
+      </ul>
+    </div>
+    <div class="req-c">
+      <div class="req-t">📱 Требования Android</div>
+      <ul class="req-l">
+        <li>Android 5.0 (Lollipop) или новее</li>
+        <li>Wi-Fi — та же сеть, что и ПК</li>
+        <li>Разрешение камеры — для QR-кода</li>
+        <li>Разрешение хранилища — для файлов</li>
+        <li class="w">APK: разрешите установку из неизвестных источников</li>
+        <li>Root-права не нужны</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="div">
+
+<!-- FAQ -->
+<div style="background:var(--bg2)">
+<div class="sec reveal">
+  <div class="sec-head">
+    <span class="eyebrow">FAQ</span>
+    <h2 class="sec-title">Часто задаваемые вопросы</h2>
+  </div>
+  <div class="faq-l">
+    <div class="faq-i">
+      <div class="faq-q" onclick="faq(this)">Работает ли без подключения к интернету? <span class="faq-ar">▼</span></div>
+      <div class="faq-a"><div class="faq-ai">Да, полностью. Всё работает только через локальную Wi-Fi или Ethernet сеть. Интернет не нужен ни для передачи файлов, ни для чата, ни для голоса. Единственное исключение — скачивание самого приложения.</div></div>
+    </div>
+    <div class="faq-i">
+      <div class="faq-q" onclick="faq(this)">Почему брандмауэр Windows спрашивает разрешение? <span class="faq-ar">▼</span></div>
+      <div class="faq-a"><div class="faq-ai">Приложение слушает несколько локальных портов (<code>47777</code>–<code>47790</code>, <code>8765</code>) для обнаружения и передачи данных. При первом запуске правила брандмауэра добавляются автоматически через PowerShell. Если нет — запустите от имени администратора.</div></div>
+    </div>
+    <div class="faq-i">
+      <div class="faq-q" onclick="faq(this)">Как обеспечивается безопасность передачи? <span class="faq-ar">▼</span></div>
+      <div class="faq-a"><div class="faq-ai">Все данные шифруются через ECDH P-256 (обмен ключами) + AES-256-GCM (шифрование) ещё до отправки. Каждая сессия — уникальный ключ. При первом подключении ПК↔ПК требуется PIN-подтверждение. Никто в сети не сможет перехватить или изменить данные.</div></div>
+    </div>
+    <div class="faq-i">
+      <div class="faq-q" onclick="faq(this)">Есть ли ограничение по размеру файла? <span class="faq-ar">▼</span></div>
+      <div class="faq-a"><div class="faq-ai">Нет никаких ограничений. Ограничение — только скорость вашей сети. Папки автоматически упаковываются в ZIP и распаковываются на стороне получателя.</div></div>
+    </div>
+    <div class="faq-i">
+      <div class="faq-q" onclick="faq(this)">Что такое Mesh-сеть и зачем она нужна? <span class="faq-ar">▼</span></div>
+      <div class="faq-a"><div class="faq-ai">Mesh позволяет передавать данные между устройствами, которые не подключены напрямую. Пример: ПК-А в Wi-Fi #1, ПК-В в Wi-Fi #2, ПК-Б подключён к обеим. Данные от А до В автоматически пройдут через Б. Маршрутизация через BFS, пересчёт каждые 20 секунд.</div></div>
+    </div>
+    <div class="faq-i">
+      <div class="faq-q" onclick="faq(this)">Работает ли на Windows 7? <span class="faq-ar">▼</span></div>
+      <div class="faq-a"><div class="faq-ai">Да! Специально поддерживается Windows 7 SP1 (32-bit и 64-bit). Нужен .NET Framework 4.8 — бесплатно скачайте с сайта Microsoft (~65 MB). Голосовой чат использует WinMM P/Invoke (winmm.dll) — встроен во все версии Windows.</div></div>
+    </div>
+    <div class="faq-i">
+      <div class="faq-q" onclick="faq(this)">Телефон и ПК должны быть в одной Wi-Fi сети? <span class="faq-ar">▼</span></div>
+      <div class="faq-a"><div class="faq-ai">Для прямого подключения — да. Но с Mesh-сетью можно передавать данные между разными сетями через промежуточный ПК, подключённый к обеим. Для QR-кода достаточно, чтобы телефон мог достучаться до IP ПК.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-logo">📲 QR File Share</div>
+  <div class="ft-desc">Передача файлов без интернета — Android ↔ Windows. Бесплатно. Открытый исходный код.</div>
+  <div class="ft-links">
+    <a href="https://github.com/YOUR_USERNAME/QRFileShare" class="ft-link" target="_blank">GitHub</a>
+    <a href="https://www.rustore.ru/catalog/app/com.example.qrfileshare" class="ft-link" target="_blank">RuStore</a>
+    <a href="#download" class="ft-link">Скачать</a>
+    <a href="#bench" class="ft-link">Сравнение</a>
+    <a href="#how" class="ft-link">Как работает</a>
+  </div>
+  <div class="ft-copy">© 2025 QR File Share — Бесплатно и с открытым кодом</div>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.07,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+const bobs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.bar-f').forEach(b=>{const w=b.style.width;b.style.width='0%';setTimeout(()=>b.style.width=w,150)})}})},{threshold:.15});
+document.querySelectorAll('.bench').forEach(t=>bobs.observe(t));
+function faq(el){const i=el.parentElement;const was=i.classList.contains('open');document.querySelectorAll('.faq-i').forEach(x=>x.classList.remove('open'));if(!was)i.classList.add('open')}
+</script>
+</body>
+</html>
