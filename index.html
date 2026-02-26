@@ -3,1274 +3,794 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR File Share — Передача файлов без интернета</title>
-<meta name="description" content="Передача файлов между Android и Windows через QR-код и Wi-Fi. AES-256 шифрование, mesh-сеть, чат, синхронизация фото.">
+<title>Kronas Project</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:'DM Sans',system-ui,sans-serif;background:#0a0b0f;color:#eaeef5;line-height:1.6;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-
-:root{
-  --bg:#0a0b0f;
-  --bg2:#111318;
-  --bg3:#181c24;
-  --border:#1e2330;
-  --border2:#2a3040;
-  --text:#eaeef5;
-  --text2:#8892a4;
-  --text3:#525f72;
-  --accent:#4f8ef7;
-  --accent2:#3a6fd4;
-  --green:#2dd473;
-  --gdim:rgba(45,212,115,0.1);
-  --red:#ff5757;
-  --orange:#f5a623;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+  overflow-x: hidden;
 }
 
-/* NAV */
-nav{
-  position:sticky;top:0;z-index:100;
-  background:rgba(10,11,15,0.85);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:0 40px;height:64px;
-  display:flex;align-items:center;justify-content:space-between;
+:root {
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface2: #f9fafb;
+  --border: #e5e7eb;
+  --text: #111827;
+  --text2: #6b7280;
+  --text3: #9ca3af;
+  --accent: #0066cc;
+  --accent-light: #e8f0fe;
+  --accent2: #0052a3;
+  --green: #10b981;
+  --green-light: #d1fae5;
 }
-.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.01em}
-.nav-logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#1a4db3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 4px 16px rgba(79,142,247,0.3)}
-.nav-links{display:flex;gap:4px}
-.nav-link{padding:7px 16px;border-radius:7px;font-size:.82rem;font-weight:500;color:var(--text2);transition:all .15s}
-.nav-link:hover{color:var(--text);background:var(--bg3)}
-.nav-cta{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:8px;font-size:.82rem;font-weight:600;background:var(--accent);color:#fff;transition:all .2s;box-shadow:0 4px 16px rgba(79,142,247,0.3)}
-.nav-cta:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(79,142,247,0.4)}
+
+/* HEADER / NAV */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 32px; height: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.logo-icon span {
+  border-radius: 2px;
+  display: block;
+}
+.logo-icon span:nth-child(1) { background: #f25022; }
+.logo-icon span:nth-child(2) { background: #7fba00; }
+.logo-icon span:nth-child(3) { background: #00a4ef; }
+.logo-icon span:nth-child(4) { background: #ffb900; }
+
+.logo-text {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.logo-text span { color: var(--accent); }
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nav-link {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text2);
+  text-decoration: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--text); background: var(--bg); }
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.nav-btn:hover { background: var(--accent2); transform: translateY(-1px); }
 
 /* HERO */
-.hero{
-  position:relative;overflow:hidden;
-  padding:100px 40px 80px;text-align:center;
+.hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 72px 32px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%,rgba(79,142,247,0.12) 0%,transparent 60%),
-    radial-gradient(ellipse 40% 40% at 20% 80%,rgba(45,212,115,0.05) 0%,transparent 50%),
-    radial-gradient(ellipse 40% 30% at 80% 70%,rgba(79,142,247,0.06) 0%,transparent 50%);
+    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(0,102,204,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 0% 100%, rgba(16,185,129,0.04) 0%, transparent 60%);
 }
-.hero::before{
-  content:'';position:absolute;inset:0;
-  background-image:radial-gradient(circle,rgba(255,255,255,0.025) 1px,transparent 1px);
-  background-size:32px 32px;
-  mask-image:radial-gradient(ellipse 70% 50% at 50% 50%,black,transparent);
-}
-.hero-platform-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
-.chip{display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:1px solid}
-.chip-blue{border-color:rgba(79,142,247,.35);color:var(--accent);background:rgba(79,142,247,.08)}
-.chip-green{border-color:rgba(45,212,115,.35);color:var(--green);background:rgba(45,212,115,.08)}
-.chip-note{border-color:rgba(82,95,114,.3);color:var(--text3);background:rgba(255,255,255,.03);font-size:.68rem;text-transform:none;letter-spacing:0;padding:5px 12px}
-.hero h1{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(2.5rem,7vw,4.6rem);
-  font-weight:800;letter-spacing:-.04em;line-height:1.05;
-  margin-bottom:22px;
-  background:linear-gradient(150deg,#eaeef5 40%,#6080a0 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hero h1 em{
-  font-style:normal;
-  background:linear-gradient(135deg,var(--accent),var(--green));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hero-sub{
-  font-size:clamp(1rem,2.5vw,1.15rem);color:var(--text2);
-  max-width:580px;margin:0 auto 40px;line-height:1.75;
-  font-weight:400;
-}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
-.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:10px;font-size:.9rem;font-weight:600;transition:all .2s;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;letter-spacing:.01em}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(79,142,247,0.35)}
-.btn-primary:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(79,142,247,0.45)}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2);backdrop-filter:blur(8px)}
-.btn-ghost:hover{background:var(--bg3);border-color:var(--text3)}
-.btn-dl{background:linear-gradient(135deg,#1a3a6e,#0f2550);color:#fff;border:1px solid rgba(79,142,247,0.3);box-shadow:0 4px 16px rgba(10,20,50,0.5)}
-.btn-dl:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(79,142,247,0.25);border-color:rgba(79,142,247,0.5)}
-.stats-row{display:flex;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:700px;margin:0 auto;overflow:hidden}
-.stat{flex:1;padding:22px 20px;text-align:center;border-right:1px solid var(--border);position:relative}
-.stat:last-child{border-right:none}
-.sv{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-.04em;line-height:1}
-.sl{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-top:5px;font-weight:600}
 
-/* DIVIDER */
-hr.div{border:none;border-top:1px solid var(--border);margin:0}
+.hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
 
-/* SECTIONS */
-.sec{padding:80px 40px;max-width:1100px;margin:0 auto}
-.sec-head{text-align:center;margin-bottom:56px}
-.eyebrow{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;padding:4px 12px;border:1px solid rgba(79,142,247,.25);border-radius:20px;background:rgba(79,142,247,.06)}
-.sec-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;letter-spacing:-.03em;margin-bottom:14px;color:var(--text)}
-.sec-sub{color:var(--text2);font-size:.95rem;max-width:520px;margin:0 auto;line-height:1.75}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--accent-light);
+  border: 1px solid rgba(0,102,204,0.2);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
 
-/* HOW IT WORKS */
-.how-bg{background:var(--bg)}
-.mode-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;margin-top:40px}
-.mode-header:first-child{margin-top:0}
-.mode-icon{font-size:1.2rem;width:40px;height:40px;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center}
-.mode-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
-.mode-desc{font-size:.78rem;color:var(--text3);margin-left:auto}
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.step-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:14px;
-  padding:26px 22px;
-  transition:border-color .2s,transform .2s;
-  position:relative;overflow:hidden;
+.hero h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 18px;
+  max-width: 700px;
 }
-.step-card::before{
-  content:'';position:absolute;top:0;right:0;
-  width:80px;height:80px;
-  background:radial-gradient(circle,rgba(79,142,247,0.07),transparent 70%);
-}
-.step-card:hover{border-color:var(--border2);transform:translateY(-3px)}
-.step-num{
-  font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:500;
-  color:var(--accent);background:rgba(79,142,247,.1);
-  border:1px solid rgba(79,142,247,.2);border-radius:5px;
-  padding:2px 8px;display:inline-block;margin-bottom:14px;
-}
-.step-emoji{font-size:1.8rem;margin-bottom:12px;display:block}
-.step-title{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:7px}
-.step-desc{font-size:.79rem;color:var(--text2);line-height:1.65}
 
-/* FEATURES */
-.feat-bg{background:var(--bg2)}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.feat-card{
-  background:var(--bg);border:1px solid var(--border);border-radius:14px;
-  padding:24px;display:flex;gap:16px;
-  transition:border-color .2s,transform .15s;
+.hero h1 em {
+  font-style: normal;
+  color: var(--accent);
 }
-.feat-card:hover{border-color:var(--border2);transform:translateY(-2px)}
-.feat-icon{
-  width:46px;height:46px;border-radius:12px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
-}
-.fi-blue{background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.2)}
-.fi-green{background:rgba(45,212,115,.1);border:1px solid rgba(45,212,115,.2)}
-.fi-purple{background:rgba(150,100,255,.1);border:1px solid rgba(150,100,255,.2)}
-.fi-orange{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2)}
-.ft{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:5px}
-.fd{font-size:.78rem;color:var(--text2);line-height:1.65}
 
-/* BENCHMARK */
-.bench-bg{background:var(--bg)}
-.bwrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border)}
-table.bench{width:100%;border-collapse:collapse;font-size:.8rem;background:var(--bg)}
-table.bench th{
-  padding:12px 16px;text-align:left;
-  font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
-  color:var(--text3);background:var(--bg2);
-  border-bottom:1px solid var(--border);white-space:nowrap;
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 36px;
+  font-weight: 400;
 }
-table.bench td{padding:14px 16px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle}
-table.bench tr:last-child td{border-bottom:none}
-table.bench tr:hover td{background:rgba(255,255,255,.015)}
-.bapp{font-family:'Syne',sans-serif;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;font-size:.85rem}
-.bhl td{background:rgba(45,212,115,.03)}
-.bhl:hover td{background:rgba(45,212,115,.055)}
-.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:700;letter-spacing:.02em;white-space:nowrap}
-.pill-yes{background:rgba(45,212,115,.1);border:1px solid rgba(45,212,115,.25);color:var(--green)}
-.pill-no{background:rgba(255,87,87,.07);border:1px solid rgba(255,87,87,.2);color:var(--red)}
-.pill-par{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:var(--orange)}
 
-/* SECURITY */
-.sec-bg{background:var(--bg2)}
-.crypto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.crypto-card{
-  background:var(--bg);border:1px solid rgba(150,100,255,.2);border-radius:14px;
-  padding:22px;text-align:center;
-  transition:border-color .2s,transform .15s;
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.crypto-card:hover{border-color:rgba(150,100,255,.4);transform:translateY(-2px)}
-.cico{font-size:2rem;margin-bottom:10px}
-.cname{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:5px;color:#b88fff}
-.cdesc{font-size:.73rem;color:var(--text3);line-height:1.6}
 
-/* PORTS */
-.ports-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-.port-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
-  padding:14px 18px;display:flex;align-items:center;gap:14px;
-  transition:border-color .15s;
+.btn-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  border: none;
 }
-.port-card:hover{border-color:var(--border2)}
-.pnum{
-  font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:500;
-  color:var(--accent);background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);
-  border-radius:6px;padding:3px 10px;flex-shrink:0;
-}
-.pproto{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:3px}
-.pdesc{font-size:.8rem;font-weight:600;color:var(--text)}
-.psub{font-size:.7rem;color:var(--text3)}
 
-/* DOWNLOAD */
-.dl-bg{background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%)}
-.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:32px}
-.dlc{
-  background:var(--bg2);border:1px solid var(--border);border-radius:18px;
-  padding:32px;display:flex;flex-direction:column;gap:16px;
-  transition:border-color .2s,transform .2s;
-  position:relative;overflow:hidden;
+.btn-hero-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,102,204,0.28);
 }
-.dlc::before{
-  content:'';position:absolute;top:0;right:0;width:120px;height:120px;
-  border-radius:50%;opacity:0.04;transition:opacity .3s;
-}
-.dlc:hover{transform:translateY(-4px)}
-.dlc:hover::before{opacity:.08}
-.dlc.win{border-color:rgba(79,142,247,.35)}
-.dlc.win::before{background:var(--accent)}
-.dlc.win:hover{border-color:rgba(79,142,247,.6)}
-.dlc.and{border-color:rgba(45,212,115,.3)}
-.dlc.and::before{background:var(--green)}
-.dlc.and:hover{border-color:rgba(45,212,115,.5)}
-.dlc-ico{font-size:2.6rem}
-.dlc-t{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-.02em}
-.dlc-d{font-size:.82rem;color:var(--text2);line-height:1.7;flex:1}
-.dlc-meta{display:flex;flex-wrap:wrap;gap:7px}
-.dm{font-size:.68rem;font-family:'JetBrains Mono',monospace;color:var(--text3);background:var(--bg3);border-radius:4px;padding:3px 8px;border:1px solid var(--border)}
-.dm.g{color:var(--green);background:rgba(45,212,115,.1);border-color:rgba(45,212,115,.2)}
-.dl-acts{display:flex;flex-direction:column;gap:9px}
-.dlb{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:13px 20px;border-radius:10px;font-size:.85rem;font-weight:600;
-  transition:all .2s;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;text-align:center;
-}
-.dlb-win{background:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(79,142,247,0.3)}
-.dlb-win:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 6px 22px rgba(79,142,247,0.4)}
-.dlb-and{background:linear-gradient(135deg,#1a5c3a,#0f3d28);color:#fff;border:1px solid rgba(45,212,115,.3);box-shadow:0 4px 14px rgba(0,0,0,.3)}
-.dlb-and:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,212,115,.2);border-color:rgba(45,212,115,.5)}
-.dlb-ghost{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
-.dlb-ghost:hover{background:var(--border);border-color:var(--text3)}
+.btn-hero-primary:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,102,204,0.35); }
 
-/* REQUIREMENTS */
-.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
-.req-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:24px}
-.req-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.req-list{list-style:none;display:flex;flex-direction:column;gap:8px}
-.req-list li{display:flex;align-items:baseline;gap:8px;font-size:.8rem;color:var(--text2)}
-.req-list li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0;font-size:.85rem}
-.req-list li.warn::before{content:"!";color:var(--orange)}
-.req-list li code{font-family:'JetBrains Mono',monospace;font-size:.76em;background:var(--bg2);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;color:var(--accent)}
+.btn-hero-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-hero-ghost:hover { background: var(--bg); border-color: var(--text3); }
 
-/* FAQ */
-.faq-list{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
-.faq-item{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-.faq-q{
-  padding:18px 22px;font-size:.87rem;font-weight:600;
-  cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;
-  transition:background .15s;user-select:none;
-  font-family:'Syne',sans-serif;
+/* STATS BAR */
+.stats-bar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
 }
-.faq-q:hover{background:var(--bg3)}
-.faq-arr{font-size:.6rem;color:var(--text3);transition:transform .25s;flex-shrink:0}
-.faq-item.open .faq-arr{transform:rotate(180deg)}
-.faq-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
-.faq-item.open .faq-body{max-height:500px}
-.faq-inner{
-  padding:16px 22px 18px;border-top:1px solid var(--border);
-  font-size:.82rem;color:var(--text2);line-height:1.8;
+
+.stats-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  gap: 0;
 }
-code{font-family:'JetBrains Mono',monospace;font-size:.8em;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;color:var(--accent)}
+
+.stat-item {
+  flex: 1;
+  padding: 22px 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.stat-item:last-child { border-right: none; }
+
+.stat-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.stat-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text3);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+
+/* MAIN CONTENT */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 32px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.section-subtitle {
+  font-size: 0.82rem;
+  color: var(--text3);
+}
+
+/* ============================================================
+   БЛОК ПРОГРАММ — ЗДЕСЬ ДОБАВЛЯЙ НОВЫЕ КАРТОЧКИ
+   Скопируй один <div class="app-card"> и вставь ниже
+   ============================================================ */
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+.app-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.app-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  border-color: rgba(0,102,204,0.25);
+}
+
+.app-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.app-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.app-icon-blue  { background: linear-gradient(135deg, #0066cc, #004a99); }
+.app-icon-green { background: linear-gradient(135deg, #10b981, #047857); }
+.app-icon-orange{ background: linear-gradient(135deg, #f59e0b, #d97706); }
+.app-icon-purple{ background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+
+.app-meta { flex: 1; min-width: 0; }
+
+.app-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.app-version {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  background: var(--green-light);
+  color: var(--green);
+  border-radius: 20px;
+}
+
+.app-desc {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.65;
+}
+
+.app-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-size: 0.67rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text3);
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.app-size {
+  font-size: 0.72rem;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+.app-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.app-dl-btn:hover { background: var(--accent2); }
+
+.app-dl-btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  border: 1.5px solid var(--border);
+}
+.app-dl-btn-ghost:hover { background: var(--bg); color: var(--text); border-color: var(--text3); }
+
+/* NEW BADGE */
+.badge-new {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 4px;
+}
+
+/* DIVIDER SECTION */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 48px 0;
+}
+
+/* INFO STRIP */
+.info-strip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 56px;
+}
+.info-strip-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.info-strip-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 5px;
+}
+.info-strip-text {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.7;
+}
 
 /* FOOTER */
-footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 40px;text-align:center}
-.ft-logo{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
-.ft-desc{font-size:.78rem;color:var(--text3);margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto}
-.ft-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
-.ft-link{font-size:.78rem;color:var(--text3);transition:color .15s}.ft-link:hover{color:var(--accent)}
-.ft-copy{font-size:.7rem;color:var(--text3)}
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 36px 32px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.footer-left { display: flex; align-items: center; gap: 12px; }
+.footer-logo {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+.footer-copy {
+  font-size: 0.75rem;
+  color: var(--text3);
+}
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+.footer-links a {
+  font-size: 0.77rem;
+  color: var(--text3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--accent); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .nav-inner { padding: 0 16px; }
+  nav { display: none; }
+  .hero { padding: 48px 16px 56px; }
+  .stats-inner { padding: 0 16px; flex-direction: column; gap: 0; }
+  .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 16px 0; }
+  .stat-item:last-child { border-bottom: none; }
+  .main { padding: 40px 16px; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .info-strip { padding: 20px; flex-direction: column; gap: 12px; }
+  footer { padding: 28px 16px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
 
 /* ANIMATIONS */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-.reveal.visible{opacity:1;transform:none}
-.rd1{transition-delay:.07s}.rd2{transition-delay:.15s}.rd3{transition-delay:.23s}.rd4{transition-delay:.31s}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-badge { animation: fadeUp 0.5s ease both; animation-delay: 0.05s; }
+.hero h1    { animation: fadeUp 0.5s ease both; animation-delay: 0.12s; }
+.hero-sub   { animation: fadeUp 0.5s ease both; animation-delay: 0.2s; }
+.hero-actions { animation: fadeUp 0.5s ease both; animation-delay: 0.27s; }
 
-/* ONLY NOTE */
-.only-note{
-  display:flex;align-items:center;gap:12px;
-  background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);
-  border-radius:10px;padding:14px 18px;margin-bottom:32px;
-  font-size:.8rem;color:var(--orange);
-}
-.only-note strong{font-weight:700}
-
-@media(max-width:768px){
-  nav .nav-links{display:none}
-  .hero{padding:70px 20px 56px}
-  .sec{padding:56px 20px}
-  nav{padding:0 20px}
-  .req-grid{grid-template-columns:1fr}
-  .stats-row{flex-direction:column}
-  .stat{border-right:none;border-bottom:1px solid var(--border)}
-  .stat:last-child{border-bottom:none}
-  footer{padding:32px 20px}
-}
-@media(max-width:480px){
-  .hero-btns .btn{padding:12px 18px;font-size:.85rem}
-  .hero h1{font-size:2.3rem}
-}
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal.in { opacity: 1; transform: none; }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">
-    <div class="nav-logo-mark">📲</div>
-    QR File Share
-  </div>
-  <div class="nav-links">
-    <a href="#how" class="nav-link">Как работает</a>
-    <a href="#features" class="nav-link">Возможности</a>
-    <a href="#bench" class="nav-link">Сравнение</a>
-    <a href="#security" class="nav-link">Безопасность</a>
-    <a href="#download" class="nav-link">Скачать</a>
-  </div>
-  <a href="#download" class="nav-cta">⬇ Скачать</a>
-</nav>
+<!-- ═══════════════════════════════════════
+     ШАПКА САЙТА
+     ═══════════════════════════════════════ -->
+<header>
+  <div class="nav-inner">
 
-<!-- HERO -->
+    <!-- ЛОГОТИП -->
+    <a href="#" class="logo">
+      <div class="logo-icon">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <span class="logo-text">Kronas <span>Project</span></span>
+    </a>
+
+    <!-- НАВИГАЦИЯ -->
+    <nav>
+      <a href="#programs" class="nav-link">Программы</a>
+      <a href="#about" class="nav-link">О проекте</a>
+    </nav>
+
+    <a href="#programs" class="nav-btn">⬇ Скачать</a>
+
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════
+     HERO — ГЛАВНЫЙ БЛОК
+     ═══════════════════════════════════════ -->
 <section class="hero">
-  <div class="hero-platform-chips">
-    <span class="chip chip-blue">🖥 Windows 7 / 8 / 10 / 11</span>
-    <span class="chip chip-green">📱 Android 7.0+</span>
-    <span class="chip-note chip">Только Android ↔ Windows · Другие платформы не поддерживаются</span>
-  </div>
-  <h1>Передача файлов<br>без <em>интернета</em></h1>
-  <p class="hero-sub">Отправляйте файлы между Android и Windows за секунды — через QR-код и Wi-Fi. Без облака, без аккаунтов. Сквозное AES-256 шифрование и mesh-маршрутизация.</p>
-  <div class="hero-btns">
-    <a href="https://github.com/Erste1/qrfileshare/raw/main/QRFileShare_Setup_2.0.0.exe" class="btn btn-primary" download>⬇ Скачать для Windows</a>
-    <a href="#how" class="btn btn-ghost">Как это работает →</a>
-  </div>
-  <div class="stats-row">
-    <div class="stat">
-      <div class="sv" style="color:var(--green)">0</div>
-      <div class="sl">Зависимостей от интернета</div>
-    </div>
-    <div class="stat">
-      <div class="sv" style="color:var(--accent)">∞</div>
-      <div class="sl">Ограничение по размеру</div>
-    </div>
-    <div class="stat">
-      <div class="sv" style="color:#b88fff">256</div>
-      <div class="sl">AES бит шифрование</div>
-    </div>
-    <div class="stat">
-      <div class="sv" style="color:var(--orange)">11+</div>
-      <div class="sl">Языков интерфейса</div>
+  <div class="hero-inner">
+    <div class="hero-badge">🛠 Авторские программы</div>
+    <h1>Полезные программы<br>для <em>Windows</em> и Android</h1>
+    <p class="hero-sub">
+      Kronas Project — место, где выходят авторские утилиты. Бесплатно, без лишнего, с открытым исходным кодом.
+    </p>
+    <div class="hero-actions">
+      <a href="#programs" class="btn-hero btn-hero-primary">⬇ Смотреть программы</a>
+      <a href="https://github.com/Erste1/Kronas_project" target="_blank" class="btn-hero btn-hero-ghost">GitHub →</a>
     </div>
   </div>
 </section>
 
-<hr class="div">
 
-<!-- SCREENSHOTS CAROUSEL -->
-<style>
-.carousel-wrap{max-width:900px;margin:0 auto}
-.carousel-stage{
-  position:relative;border-radius:16px;overflow:hidden;
-  border:1px solid var(--border);
-  box-shadow:0 24px 64px rgba(0,0,0,0.6);
-  cursor:zoom-in;background:var(--bg3);
-  aspect-ratio:16/10;
-}
-.carousel-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1)}
-.carousel-slide{min-width:100%;height:100%;flex-shrink:0}
-.carousel-slide img{width:100%;height:100%;object-fit:cover;display:block}
-.carousel-zoom-hint{
-  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);
-  color:rgba(255,255,255,0.6);font-size:.7rem;padding:5px 13px;
-  border-radius:20px;pointer-events:none;
-  opacity:0;transition:opacity .3s;white-space:nowrap;
-}
-.carousel-stage:hover .carousel-zoom-hint{opacity:1}
-.carousel-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);
-  width:44px;height:44px;border-radius:50%;
-  background:rgba(10,11,15,0.7);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,0.1);
-  color:#fff;font-size:1.6rem;line-height:1;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;z-index:10;
-}
-.carousel-arrow:hover{background:rgba(79,142,247,0.6);border-color:var(--accent)}
-.carousel-prev{left:14px}
-.carousel-next{right:14px}
-.carousel-caption{
-  text-align:center;font-size:.78rem;color:var(--text3);
-  margin:14px 0 20px;min-height:1.4em;
-  transition:opacity .25s;
-}
-.carousel-thumbs{
-  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;
-}
-.carousel-thumb{
-  width:90px;height:56px;border-radius:8px;overflow:hidden;
-  border:2px solid transparent;cursor:pointer;
-  transition:border-color .2s,transform .2s,opacity .2s;opacity:.45;flex-shrink:0;
-}
-.carousel-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.carousel-thumb:hover{opacity:.75;transform:translateY(-2px)}
-.carousel-thumb.active{border-color:var(--accent);opacity:1;transform:translateY(-2px)}
-.carousel-dots{display:flex;gap:8px;justify-content:center}
-.cdot{
-  width:7px;height:7px;border-radius:50%;background:var(--border2);
-  cursor:pointer;transition:all .2s;
-}
-.cdot.active{background:var(--accent);width:22px;border-radius:4px}
-.cdot:hover{background:var(--text3)}
-@media(max-width:600px){
-  .carousel-thumb{width:60px;height:38px}
-  .carousel-arrow{width:36px;height:36px;font-size:1.3rem}
-}
-</style>
-
-<div style="background:var(--bg2)">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Интерфейс</span>
-    <h2 class="sec-title">Как выглядит приложение</h2>
-    <p class="sec-sub">Чистый интерфейс — всё под рукой с первого запуска</p>
-  </div>
-
-  <div class="carousel-wrap">
-    <div class="carousel-stage" onclick="openLightbox(carouselSlides[activeSlide].src)">
-      <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-slide"><img src="screen2.png" alt="Главный экран"></div>
-        <div class="carousel-slide"><img src="screen6.png" alt="Поиск устройств"></div>
-        <div class="carousel-slide"><img src="screen3.png" alt="Чат — список"></div>
-        <div class="carousel-slide"><img src="screen4.png" alt="Личный чат"></div>
-        <div class="carousel-slide"><img src="screen5.png" alt="История файлов"></div>
-        <div class="carousel-slide"><img src="screen1.png" alt="11 языков"></div>
-      </div>
-      <div class="carousel-zoom-hint">🔍 Нажмите для увеличения</div>
-      <button class="carousel-arrow carousel-prev" onclick="event.stopPropagation();carouselMove(-1)">‹</button>
-      <button class="carousel-arrow carousel-next" onclick="event.stopPropagation();carouselMove(1)">›</button>
-    </div>
-
-    <div class="carousel-caption" id="carouselCaption">Главный экран: отправка файлов, QR-код для Android, обнаружение соседних ПК</div>
-
-    <div class="carousel-thumbs" id="carouselThumbs">
-      <div class="carousel-thumb active" onclick="carouselGo(0)"><img src="screen2.png" alt=""></div>
-      <div class="carousel-thumb" onclick="carouselGo(1)"><img src="screen6.png" alt=""></div>
-      <div class="carousel-thumb" onclick="carouselGo(2)"><img src="screen3.png" alt=""></div>
-      <div class="carousel-thumb" onclick="carouselGo(3)"><img src="screen4.png" alt=""></div>
-      <div class="carousel-thumb" onclick="carouselGo(4)"><img src="screen5.png" alt=""></div>
-      <div class="carousel-thumb" onclick="carouselGo(5)"><img src="screen1.png" alt=""></div>
-    </div>
-
-    <div class="carousel-dots" id="carouselDots">
-      <span class="cdot active" onclick="carouselGo(0)"></span>
-      <span class="cdot" onclick="carouselGo(1)"></span>
-      <span class="cdot" onclick="carouselGo(2)"></span>
-      <span class="cdot" onclick="carouselGo(3)"></span>
-      <span class="cdot" onclick="carouselGo(4)"></span>
-      <span class="cdot" onclick="carouselGo(5)"></span>
-    </div>
-  </div>
-</div>
-</div>
-
-
-<!-- ANDROID SCREENSHOTS -->
-<div style="background:var(--bg)">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Android</span>
-    <h2 class="sec-title">Мобильное приложение</h2>
-    <p class="sec-sub">Красивый и удобный интерфейс на Android — передача одним касанием</p>
-  </div>
-
-  <div class="android-gallery">
-    <div class="and-thumb active" onclick="andGo(0)">
-      <img src="and7.png" alt="">
-      <span>Главный экран</span>
-    </div>
-    <div class="and-thumb" onclick="andGo(1)">
-      <img src="and8.png" alt="">
-      <span>Выбор файла</span>
-    </div>
-    <div class="and-thumb" onclick="andGo(2)">
-      <img src="and9.png" alt="">
-      <span>QR-код</span>
-    </div>
-    <div class="and-thumb" onclick="andGo(3)">
-      <img src="and4.png" alt="">
-      <span>Wi-Fi Direct</span>
-    </div>
-    <div class="and-thumb" onclick="andGo(4)">
-      <img src="and3.png" alt="">
-      <span>Авто-фото</span>
-    </div>
-    <div class="and-thumb" onclick="andGo(5)">
-      <img src="and2.png" alt="">
-      <span>Мёртвая зона</span>
-    </div>
-    <div class="and-thumb" onclick="andGo(6)">
-      <img src="and5.png" alt="">
-      <span>11 языков</span>
-    </div>
-    <div class="and-thumb" onclick="andGo(7)">
-      <img src="and1.png" alt="">
-      <span>Экран запуска</span>
-    </div>
-  </div>
-
-  <div class="and-stage-wrap">
-    <div class="and-phone-frame">
-      <div class="and-phone-screen">
-        <img src="and7.png" alt="Android экран" id="andMainImg" onclick="openLightbox(this.src)">
-      </div>
-    </div>
-    <div class="and-info">
-      <div class="and-caption" id="andCaption">
-        <h3>Отправить и получить файл</h3>
-        <p>Выберите файл — нажмите «Создать QR-код» — покажите другому устройству. Передача начнётся мгновенно.</p>
-      </div>
-      <div class="and-features-list">
-        <div class="and-feat" onclick="andGo(0)"><span class="and-dot" id="af0">●</span> Главный экран — отправка и получение</div>
-        <div class="and-feat" onclick="andGo(1)"><span class="and-dot" id="af1">●</span> Выбор файла и подготовка к отправке</div>
-        <div class="and-feat" onclick="andGo(2)"><span class="and-dot" id="af2">●</span> QR-код для передачи на другое устройство</div>
-        <div class="and-feat" onclick="andGo(3)"><span class="and-dot" id="af3">●</span> Wi-Fi Direct — без роутера и интернета</div>
-        <div class="and-feat" onclick="andGo(4)"><span class="and-dot" id="af4">●</span> Авто-синхронизация фото на ПК</div>
-        <div class="and-feat" onclick="andGo(5)"><span class="and-dot" id="af5">●</span> Режим мёртвой зоны — телефон как хотспот</div>
-        <div class="and-feat" onclick="andGo(6)"><span class="and-dot" id="af6">●</span> 11 языков интерфейса</div>
-        <div class="and-feat" onclick="andGo(7)"><span class="and-dot" id="af7">●</span> Красивый экран запуска</div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<style>
-.android-gallery{
-  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;
-}
-.and-thumb{
-  display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
-  transition:transform .2s,opacity .2s;opacity:.45;
-}
-.and-thumb img{
-  width:58px;height:100px;object-fit:cover;object-position:top;
-  border-radius:8px;border:2px solid transparent;transition:border-color .2s;
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
-}
-.and-thumb span{font-size:.6rem;color:var(--text3);text-align:center;max-width:60px;line-height:1.3}
-.and-thumb:hover{opacity:.75;transform:translateY(-3px)}
-.and-thumb.active{opacity:1;transform:translateY(-4px)}
-.and-thumb.active img{border-color:var(--accent)}
-.and-thumb.active span{color:var(--accent)}
-
-.and-stage-wrap{
-  display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center;
-  max-width:860px;margin:0 auto;
-}
-.and-phone-frame{
-  position:relative;
-  background:linear-gradient(145deg,#1a1d26,#12141c);
-  border-radius:40px;padding:14px 12px;
-  border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 30px 70px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.06);
-  flex-shrink:0;
-}
-.and-phone-frame::before{
-  content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);
-  width:60px;height:5px;background:rgba(255,255,255,0.12);border-radius:3px;
-}
-.and-phone-screen{
-  border-radius:28px;overflow:hidden;
-  background:#000;aspect-ratio:9/19;
-}
-.and-phone-screen img{
-  width:100%;height:100%;object-fit:cover;object-position:top;
-  display:block;cursor:zoom-in;
-  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .3s;
-}
-.and-info{display:flex;flex-direction:column;gap:20px}
-.and-caption h3{
-  font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;
-  margin-bottom:8px;letter-spacing:-.02em;
-}
-.and-caption p{font-size:.83rem;color:var(--text2);line-height:1.7}
-.and-features-list{display:flex;flex-direction:column;gap:4px}
-.and-feat{
-  font-size:.8rem;color:var(--text3);padding:8px 12px;border-radius:8px;
-  cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px;
-  border:1px solid transparent;
-}
-.and-feat:hover{color:var(--text);background:var(--bg2)}
-.and-feat.active-feat{color:var(--text);background:var(--bg2);border-color:var(--border);font-weight:600}
-.and-dot{color:var(--border2);font-size:.5rem;flex-shrink:0;transition:color .2s}
-.and-feat.active-feat .and-dot{color:var(--accent)}
-@media(max-width:700px){
-  .and-stage-wrap{grid-template-columns:1fr;justify-items:center}
-  .and-phone-frame{width:220px}
-  .and-info{width:100%}
-}
-</style>
-
-<!-- LIGHTBOX -->
-<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.94);z-index:1000;align-items:center;justify-content:center;padding:20px;cursor:zoom-out" onclick="closeLightbox()">
-  <img id="lightbox-img" src="" style="max-width:92vw;max-height:92vh;border-radius:14px;box-shadow:0 40px 100px rgba(0,0,0,0.9);object-fit:contain">
-  <div style="position:absolute;top:18px;right:24px;font-size:2rem;color:rgba(255,255,255,0.4);cursor:pointer;line-height:1;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'" onclick="closeLightbox()">×</div>
-</div>
-
-<hr class="div">
-
-<!-- HOW IT WORKS -->
-<div id="how" class="how-bg">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Как это работает</span>
-    <h2 class="sec-title">Три шага — и файл передан</h2>
-    <p class="sec-sub">Никакой настройки, никаких аккаунтов. Просто Wi-Fi и QR-код.</p>
-  </div>
-
-  <div class="mode-header">
-    <div class="mode-icon">🖥</div>
-    <div>
-      <div class="mode-title">ПК → Android</div>
-      <div style="font-size:.75rem;color:var(--text3)">Отправить файл с компьютера на телефон</div>
-    </div>
-  </div>
-  <div class="steps-grid">
-    <div class="step-card reveal rd1">
-      <span class="step-num">01</span>
-      <span class="step-emoji">📁</span>
-      <div class="step-title">Выберите файл на ПК</div>
-      <div class="step-desc">Перетащите файл или папку в приложение. Поддерживаются любые форматы — авто-ZIP для папок.</div>
-    </div>
-    <div class="step-card reveal rd2">
-      <span class="step-num">02</span>
-      <span class="step-emoji">📷</span>
-      <div class="step-title">QR-код появится на экране</div>
-      <div class="step-desc">Приложение генерирует уникальный QR-код с адресом и портом. Всё только в локальной сети.</div>
-    </div>
-    <div class="step-card reveal rd3">
-      <span class="step-num">03</span>
-      <span class="step-emoji">✅</span>
-      <div class="step-title">Сканируйте на Android</div>
-      <div class="step-desc">Откройте QR File Share на телефоне → Scan → файл начнёт загружаться мгновенно.</div>
-    </div>
-  </div>
-
-  <div class="mode-header" style="margin-top:44px">
-    <div class="mode-icon">📱</div>
-    <div>
-      <div class="mode-title">Android → ПК</div>
-      <div style="font-size:.75rem;color:var(--text3)">Отправить файл с телефона на компьютер</div>
-    </div>
-  </div>
-  <div class="steps-grid">
-    <div class="step-card reveal rd1">
-      <span class="step-num">01</span>
-      <span class="step-emoji">🖥</span>
-      <div class="step-title">«Принять» на ПК</div>
-      <div class="step-desc">Нажмите «Принять от Android» в приложении. ПК покажет QR-код с адресом получения.</div>
-    </div>
-    <div class="step-card reveal rd2">
-      <span class="step-num">02</span>
-      <span class="step-emoji">📤</span>
-      <div class="step-title">Отправьте с телефона</div>
-      <div class="step-desc">В Android-приложении выберите файл → «Отправить на ПК» → Scan QR. Передача начнётся сразу.</div>
-    </div>
-    <div class="step-card reveal rd3">
-      <span class="step-num">03</span>
-      <span class="step-emoji">📂</span>
-      <div class="step-title">Файл сохранён на ПК</div>
-      <div class="step-desc">Файл автоматически сохраняется в папку Загрузки. История всех передач сохраняется.</div>
-    </div>
-  </div>
-
-  <div class="mode-header" style="margin-top:44px">
-    <div class="mode-icon">🔗</div>
-    <div>
-      <div class="mode-title">ПК ↔ ПК</div>
-      <div style="font-size:.75rem;color:var(--text3)">Передача между компьютерами в локальной сети</div>
-    </div>
-  </div>
-  <div class="steps-grid">
-    <div class="step-card reveal rd1">
-      <span class="step-num">01</span>
-      <span class="step-emoji">🔍</span>
-      <div class="step-title">Автообнаружение по сети</div>
-      <div class="step-desc">Все ПК с приложением в одной сети видят друг друга автоматически через UDP broadcast.</div>
-    </div>
-    <div class="step-card reveal rd2">
-      <span class="step-num">02</span>
-      <span class="step-emoji">🔐</span>
-      <div class="step-title">PIN-сопряжение</div>
-      <div class="step-desc">При первом подключении нужно подтвердить PIN. После — компьютеры запоминают друг друга.</div>
-    </div>
-    <div class="step-card reveal rd3">
-      <span class="step-num">03</span>
-      <span class="step-emoji">⚡</span>
-      <div class="step-title">Передача со скоростью сети</div>
-      <div class="step-desc">AES-256-GCM + ECDH шифрование. Скорость ограничена только вашим Wi-Fi или LAN.</div>
-    </div>
-  </div>
-</div>
-</div>
-
-<hr class="div">
-
-<!-- FEATURES -->
-<div id="features" class="feat-bg">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Возможности</span>
-    <h2 class="sec-title">Всё для работы в локальной сети</h2>
-    <p class="sec-sub">Передача файлов, зашифрованный чат и mesh-маршрутизация — без единого байта через интернет.</p>
-  </div>
-
-  <div class="feat-grid">
-    <div class="feat-card reveal rd1">
-      <div class="feat-icon fi-blue">🔒</div>
+<!-- ═══════════════════════════════════════
+     СТАТИСТИКА
+     ═══════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-icon">📦</div>
       <div>
-        <div class="ft">AES-256-GCM + ECDH шифрование</div>
-        <div class="fd">ECDH P-256 для обмена ключами. Каждая сессия — уникальный ключ. Совместимо Android ↔ Windows через BouncyCastle.</div>
+        <!-- ИЗМЕНИ ЦИФРУ когда добавишь больше программ -->
+        <div class="stat-val">1</div>
+        <div class="stat-label">Программа</div>
       </div>
     </div>
-    <div class="feat-card reveal rd2">
-      <div class="feat-icon fi-green">📁</div>
+    <div class="stat-item">
+      <div class="stat-icon">🖥</div>
       <div>
-        <div class="ft">Файлы и папки без ограничений</div>
-        <div class="fd">Папки автоматически пакуются в ZIP. Множественная отправка. Структура директорий сохраняется полностью.</div>
+        <div class="stat-val">Win+And</div>
+        <div class="stat-label">Платформы</div>
       </div>
     </div>
-    <div class="feat-card reveal rd3">
-      <div class="feat-icon fi-blue">💬</div>
+    <div class="stat-item">
+      <div class="stat-icon">💰</div>
       <div>
-        <div class="ft">Зашифрованный чат с историей</div>
-        <div class="fd">Групповой и личный чат, файлы прямо в чате, переименование сессий, тёмная и светлая тема, эмодзи-аватары.</div>
+        <div class="stat-val">0 ₽</div>
+        <div class="stat-label">Стоимость</div>
       </div>
     </div>
-    <div class="feat-card reveal rd1">
-      <div class="feat-icon fi-orange">📸</div>
+    <div class="stat-item">
+      <div class="stat-icon">🔒</div>
       <div>
-        <div class="ft">Автосинхронизация фото с Android</div>
-        <div class="fd">Новые фото с телефона автоматически появляются на ПК в реальном времени. Порт 47790 TCP.</div>
+        <div class="stat-val">Open</div>
+        <div class="stat-label">Исходный код</div>
       </div>
     </div>
-    <div class="feat-card reveal rd2">
-      <div class="feat-icon fi-purple">🌐</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     ОСНОВНОЙ КОНТЕНТ
+     ═══════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ─────────────────────────────────────
+       БЛОК ПРОГРАММ
+       ─────────────────────────────────────
+       ↓↓↓ СЮДА ДОБАВЛЯЙ НОВЫЕ КАРТОЧКИ ↓↓↓
+       Скопируй блок <div class="app-card">
+       и вставь следующим — заменив текст,
+       ссылку на скачивание и иконку
+       ───────────────────────────────────── -->
+
+  <div id="programs">
+    <div class="section-header">
+      <div class="section-title">Все программы</div>
+      <div class="section-subtitle">Обновляется по мере релизов</div>
+    </div>
+
+    <div class="apps-grid">
+
+      <!-- ══════════════════════════════════
+           КАРТОЧКА 1 — QR File Share
+           ══════════════════════════════════ -->
+      <div class="app-card reveal">
+        <div class="badge-new">New</div>
+        <div class="app-card-top">
+          <div class="app-icon app-icon-blue">📲</div>
+          <div class="app-meta">
+            <div class="app-name">QR File Share</div>
+            <span class="app-version">v2.0.0</span>
+          </div>
+        </div>
+        <div class="app-desc">
+          Передача файлов между Android и Windows через QR-код и Wi-Fi без интернета. AES-256 шифрование, чат, mesh-сеть, авто-синхронизация фото.
+        </div>
+        <div class="app-tags">
+          <span class="tag">Windows 7–11</span>
+          <span class="tag">Android 7+</span>
+          <span class="tag">Без интернета</span>
+          <span class="tag">Бесплатно</span>
+        </div>
+        <div class="app-footer">
+          <div class="app-size">EXE · ~15 MB</div>
+          <div style="display:flex;gap:8px">
+            <a href="https://github.com/Erste1/Kronas_project/raw/main/QRFileShare_Setup_2.0.0.exe"
+               class="app-dl-btn" download>⬇ Скачать</a>
+            <a href="https://erste1.github.io/Kronas_project/" target="_blank"
+               class="app-dl-btn app-dl-btn-ghost">Подробнее</a>
+          </div>
+        </div>
+      </div>
+      <!-- ══ КОНЕЦ КАРТОЧКИ 1 ══ -->
+
+
+      <!-- ══════════════════════════════════
+           КАРТОЧКА 2 — ПРИМЕР (ЗАКОММЕНТИРОВАНА)
+           Раскомментируй и заполни когда появится
+           следующая программа:
+           ══════════════════════════════════
+
+      <div class="app-card reveal">
+        <div class="app-card-top">
+          <div class="app-icon app-icon-green">🗂</div>
+          <div class="app-meta">
+            <div class="app-name">Название программы</div>
+            <span class="app-version">v1.0.0</span>
+          </div>
+        </div>
+        <div class="app-desc">
+          Описание программы — что она делает, зачем нужна, чем полезна.
+        </div>
+        <div class="app-tags">
+          <span class="tag">Windows</span>
+          <span class="tag">Бесплатно</span>
+        </div>
+        <div class="app-footer">
+          <div class="app-size">EXE · X MB</div>
+          <div style="display:flex;gap:8px">
+            <a href="ССЫЛКА_НА_EXE" class="app-dl-btn" download>⬇ Скачать</a>
+            <a href="#" class="app-dl-btn app-dl-btn-ghost">Подробнее</a>
+          </div>
+        </div>
+      </div>
+
+           ══ КОНЕЦ КАРТОЧКИ 2 ══ -->
+
+
+      <!-- ══ ДОБАВЛЯЙ НОВЫЕ КАРТОЧКИ ЗДЕСЬ ══ -->
+
+    </div>
+    <!-- ══ КОНЕЦ apps-grid ══ -->
+  </div>
+
+
+  <hr class="section-divider">
+
+
+  <!-- ─────────────────────────────────────
+       ИНФОРМАЦИЯ О ПРОЕКТЕ
+       ─────────────────────────────────────-->
+  <div id="about">
+    <div class="info-strip reveal">
+      <div class="info-strip-icon">🧑‍💻</div>
       <div>
-        <div class="ft">Mesh-сеть — файлы через несколько ПК</div>
-        <div class="fd">Если получатель в другой сети — данные маршрутизируются через промежуточный ПК. BFS-алгоритм, пересчёт каждые 20 сек.</div>
-      </div>
-    </div>
-    <div class="feat-card reveal rd3">
-      <div class="feat-icon fi-blue">👁</div>
-      <div>
-        <div class="ft">Скрытие IP в интерфейсе</div>
-        <div class="fd">Кнопка «глазик» скрывает IP по всему UI — показывает <code>192.168.1.***</code> при стриме или записи экрана.</div>
-      </div>
-    </div>
-    <div class="feat-card reveal rd1">
-      <div class="feat-icon fi-green">🖥</div>
-      <div>
-        <div class="ft">Windows 7 / 8 / 10 / 11 — один EXE</div>
-        <div class="fd">.NET Framework 4.8, x86 и x64. Без установки — просто скачайте и запустите. Правила брандмауэра добавляются автоматически.</div>
-      </div>
-    </div>
-    <div class="feat-card reveal rd2">
-      <div class="feat-icon fi-orange">🌍</div>
-      <div>
-        <div class="ft">11 языков интерфейса</div>
-        <div class="fd">RU, EN, DE, FR, ES, ZH, JA, KO, PT, AR, HI. Переключение мгновенное — без перезапуска приложения.</div>
-      </div>
-    </div>
-    <div class="feat-card reveal rd3">
-      <div class="feat-icon fi-purple">🔗</div>
-      <div>
-        <div class="ft">QR-код для быстрого подключения</div>
-        <div class="fd">Уникальный QR-код для каждой сессии. Никаких ручных вводов IP — достаточно одного сканирования камерой.</div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<hr class="div">
-
-<!-- BENCHMARK -->
-<div id="bench" class="bench-bg">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Сравнение</span>
-    <h2 class="sec-title">QR File Share vs. аналоги</h2>
-    <p class="sec-sub">Сравнение с популярными инструментами для передачи файлов в локальной сети</p>
-  </div>
-  <div class="bwrap">
-    <table class="bench">
-      <thead>
-        <tr>
-          <th style="width:160px">Приложение</th>
-          <th>Без инт.</th>
-          <th>Шифрование</th>
-          <th>Andro. ↔ Win</th>
-          <th>Mesh</th>
-          <th>Авто-фото</th>
-          <th>Чат</th>
-          <th>Win 7</th>
-          <th>Скорость</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="bhl">
-          <td><div class="bapp" style="color:var(--green)">📲 QR File Share</div></td>
-          <td><span class="pill pill-yes">✓ Да</span></td>
-          <td><span class="pill pill-yes">AES-256-GCM</span></td>
-          <td><span class="pill pill-yes">✓ QR-код</span></td>
-          <td><span class="pill pill-yes">✓ Есть</span></td>
-          <td><span class="pill pill-yes">✓ Авто</span></td>
-          <td><span class="pill pill-yes">✓ Есть</span></td>
-          <td><span class="pill pill-yes">✓ x86/x64</span></td>
-          <td><span class="pill pill-yes">≈ Wi-Fi</span></td>
-        </tr>
-        <tr>
-          <td><div class="bapp">📁 SHAREit</div></td>
-          <td><span class="pill pill-yes">✓ Да</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-yes">✓ Есть</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-par">Частично</span></td>
-          <td><span class="pill pill-par">Быстро</span></td>
-        </tr>
-        <tr>
-          <td><div class="bapp">📡 Snapdrop</div></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-par">TLS</span></td>
-          <td><span class="pill pill-yes">✓ Веб</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-yes">Браузер</span></td>
-          <td><span class="pill pill-par">Средне</span></td>
-        </tr>
-        <tr>
-          <td><div class="bapp">💻 KDE Connect</div></td>
-          <td><span class="pill pill-yes">✓ Да</span></td>
-          <td><span class="pill pill-par">RSA/TLS</span></td>
-          <td><span class="pill pill-yes">✓ Есть</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-par">Вручную</span></td>
-          <td><span class="pill pill-yes">✓ Есть</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-par">Быстро</span></td>
-        </tr>
-        <tr>
-          <td><div class="bapp">☁️ Google Drive</div></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-yes">TLS</span></td>
-          <td><span class="pill pill-yes">✓ Есть</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-par">Только фото</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-yes">Браузер</span></td>
-          <td><span class="pill pill-no">Через сервер</span></td>
-        </tr>
-        <tr>
-          <td><div class="bapp">📦 AirDrop</div></td>
-          <td><span class="pill pill-yes">✓ Да</span></td>
-          <td><span class="pill pill-yes">TLS</span></td>
-          <td><span class="pill pill-no">iOS/macOS only</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-no">✗ Нет</span></td>
-          <td><span class="pill pill-yes">Очень быстро</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <p style="font-size:.68rem;color:var(--text3);text-align:center;margin-top:10px">* Данные на основе публичных источников. Скорость зависит от вашей сети.</p>
-</div>
-</div>
-
-<hr class="div">
-
-<!-- SECURITY -->
-<div id="security" class="sec-bg">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Безопасность</span>
-    <h2 class="sec-title">Сквозное шифрование</h2>
-    <p class="sec-sub">Все данные шифруются до отправки. Никто в сети не может перехватить или изменить содержимое.</p>
-  </div>
-  <div class="crypto-grid">
-    <div class="crypto-card">
-      <div class="cico">🔑</div>
-      <div class="cname">ECDH P-256</div>
-      <div class="cdesc">Обмен ключами. Каждая сессия — уникальный ключ. Совместимость Android ↔ Windows.</div>
-    </div>
-    <div class="crypto-card">
-      <div class="cico">🔐</div>
-      <div class="cname">AES-256-GCM</div>
-      <div class="cdesc">Шифрование с аутентификацией. Невозможно изменить данные незаметно.</div>
-    </div>
-    <div class="crypto-card">
-      <div class="cico">📦</div>
-      <div class="cname">BouncyCastle</div>
-      <div class="cdesc">Открытая криптобиблиотека. Совместима с .NET 4.8 и Android. Проверена сообществом.</div>
-    </div>
-    <div class="crypto-card">
-      <div class="cico">🔏</div>
-      <div class="cname">PIN-сопряжение</div>
-      <div class="cdesc">Первое подключение ПК↔ПК требует PIN. Хранится SHA-256 хэш — пароль нигде не записывается.</div>
-    </div>
-  </div>
-</div>
-</div>
-
-<hr class="div">
-
-<!-- PORTS -->
-<div style="background:var(--bg)">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Сетевые порты</span>
-    <h2 class="sec-title">Используемые порты</h2>
-    <p class="sec-sub">Правила брандмауэра Windows добавляются автоматически при первом запуске.</p>
-  </div>
-  <div class="ports-grid">
-    <div class="port-card">
-      <div><div class="pnum">47777</div><div class="pproto">UDP</div></div>
-      <div><div class="pdesc">Обнаружение устройств</div><div class="psub">UDP broadcast по всем интерфейсам</div></div>
-    </div>
-    <div class="port-card">
-      <div><div class="pnum">47778</div><div class="pproto">TCP</div></div>
-      <div><div class="pdesc">Передача файлов ПК ↔ ПК</div><div class="psub">AES-256-GCM + ECDH handshake</div></div>
-    </div>
-    <div class="port-card">
-      <div><div class="pnum">47779</div><div class="pproto">TCP</div></div>
-      <div><div class="pdesc">Зашифрованный чат</div><div class="psub">Текст, файлы, групповой / личный</div></div>
-    </div>
-    <div class="port-card">
-      <div><div class="pnum">47780</div><div class="pproto">TCP</div></div>
-      <div><div class="pdesc">Mesh-маршрутизация</div><div class="psub">Пересылка через промежуточные узлы</div></div>
-    </div>
-    <div class="port-card">
-      <div><div class="pnum">47790</div><div class="pproto">TCP</div></div>
-      <div><div class="pdesc">Синхронизация фото</div><div class="psub">Авто-приём новых фото с Android</div></div>
-    </div>
-    <div class="port-card">
-      <div><div class="pnum">8765</div><div class="pproto">TCP</div></div>
-      <div><div class="pdesc">QR-передача Android → ПК</div><div class="psub">HTTP-сервер для QR получения</div></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<hr class="div">
-
-<!-- DOWNLOAD -->
-<div id="download" class="dl-bg">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">Скачать</span>
-    <h2 class="sec-title">Доступно для Windows и Android</h2>
-    <p class="sec-sub">Один файл — никакой установки. Запустите и начните пользоваться прямо сейчас.</p>
-  </div>
-
-  <div class="only-note">
-    ℹ️ <div><strong>Только Android и Windows.</strong> На данном этапе приложение доступно исключительно для Android (7.0+) и Windows (7/8/10/11). Поддержка других платформ не планируется в ближайшее время.</div>
-  </div>
-
-  <!-- WIN7 CARE BANNER -->
-  <div class="win7-banner reveal">
-    <div class="win7-icon">🛡️</div>
-    <div class="win7-content">
-      <div class="win7-title">Мы помним о каждом пользователе</div>
-      <div class="win7-text">В 2026 году миллионы людей всё ещё работают на Windows 7. Мы это знаем — и специально поддерживаем <strong>Windows 7 SP1 32-bit и 64-bit</strong>. Никаких ограничений, никаких «обновитесь». Одно приложение работает на всём — от старенького офисного ПК до новейшего Windows 11.</div>
-      <div class="win7-tags">
-        <span class="win7-tag">✓ Windows 7 SP1 32-bit</span>
-        <span class="win7-tag">✓ Windows 7 SP1 64-bit</span>
-        <span class="win7-tag">✓ Windows 8 / 8.1</span>
-        <span class="win7-tag">✓ Windows 10</span>
-        <span class="win7-tag">✓ Windows 11</span>
+        <div class="info-strip-title">О проекте Kronas</div>
+        <div class="info-strip-text">
+          Kronas Project — авторские утилиты для повседневных задач. Все программы бесплатны, исходный код на GitHub. Если нашли баг или есть идея — открывайте issue.
+        </div>
       </div>
     </div>
   </div>
 
-  <style>
-  .win7-banner{
-    display:flex;gap:20px;align-items:flex-start;
-    background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(45,212,115,0.06));
-    border:1px solid rgba(79,142,247,0.25);
-    border-radius:16px;padding:24px 28px;margin-bottom:28px;
-    position:relative;overflow:hidden;
-  }
-  .win7-banner::before{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg,transparent 60%,rgba(45,212,115,0.04));
-    pointer-events:none;
-  }
-  .win7-icon{
-    font-size:2.4rem;flex-shrink:0;
-    filter:drop-shadow(0 0 12px rgba(79,142,247,0.4));
-  }
-  .win7-title{
-    font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;
-    margin-bottom:8px;letter-spacing:-.01em;
-    background:linear-gradient(135deg,var(--text),var(--accent));
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  }
-  .win7-text{
-    font-size:.83rem;color:var(--text2);line-height:1.75;margin-bottom:14px;
-  }
-  .win7-text strong{color:var(--text);-webkit-text-fill-color:var(--text)}
-  .win7-tags{display:flex;flex-wrap:wrap;gap:8px}
-  .win7-tag{
-    font-size:.7rem;font-weight:600;
-    padding:4px 12px;border-radius:20px;
-    background:rgba(45,212,115,0.08);
-    border:1px solid rgba(45,212,115,0.25);
-    color:var(--green);letter-spacing:.02em;
-  }
-  @media(max-width:540px){
-    .win7-banner{flex-direction:column;gap:12px}
-    .win7-icon{font-size:1.8rem}
-  }
-  </style>
+</main>
 
-  <div class="dl-grid">
-    <!-- WINDOWS -->
-    <div class="dlc win reveal rd1">
-      <div class="dlc-ico">🖥</div>
-      <div class="dlc-t">Windows</div>
-      <div class="dlc-d">Один EXE-файл — работает на Windows 7, 8, 10, 11. Никакой установки. Просто скачайте и запустите. .NET Framework 4.8 уже встроён в Windows 10/11.</div>
-      <div class="dlc-meta">
-        <span class="dm g">v2.0.0</span>
-        <span class="dm">.NET 4.8</span>
-        <span class="dm">x86 / x64</span>
-        <span class="dm">Без установки</span>
-      </div>
-      <div class="dl-acts">
-        <a href="https://github.com/Erste1/qrfileshare/raw/main/QRFileShare_Setup_2.0.0.exe" class="dlb dlb-win" download>⬇ Скачать QRFileShare_Setup_2.0.0.exe</a>
 
-      </div>
-    </div>
-
-    <!-- ANDROID -->
-    <div class="dlc and reveal rd2">
-      <div class="dlc-ico">📱</div>
-      <div class="dlc-t">Android</div>
-      <div class="dlc-d">Минимальная версия: Android 7.0 (Nougat). Доступно в официальном российском магазине RuStore — автообновления и безопасная проверка. Root-права не нужны.</div>
-      <div class="dlc-meta">
-        <span class="dm g">v2.0.0</span>
-        <span class="dm">Android 7.0+</span>
-        <span class="dm">RuStore</span>
-      </div>
-      <div class="dl-acts">
-        <a href="https://www.rustore.ru/catalog/app/com.example.qrfileshare" target="_blank" class="dlb dlb-and">🛒 Открыть в RuStore</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- REQUIREMENTS -->
-  <div class="req-grid reveal">
-    <div class="req-card">
-      <div class="req-title">🖥 Требования Windows</div>
-      <ul class="req-list">
-        <li>Windows 7 SP1 / 8 / 10 / 11</li>
-        <li>.NET Framework 4.8 (встроён в Windows 10/11)</li>
-        <li class="warn">Windows 7: установите .NET 4.8 Runtime (~65 MB) отдельно</li>
-        <li>Wi-Fi или LAN-сеть с Android-устройством</li>
-        <li>Правила брандмауэра добавляются автоматически</li>
-        <li>32-bit (x86) и 64-bit (x64) — один и тот же файл</li>
-      </ul>
-    </div>
-    <div class="req-card">
-      <div class="req-title">📱 Требования Android</div>
-      <ul class="req-list">
-        <li>Android 7.0 (Nougat) или новее</li>
-        <li>Wi-Fi — та же сеть, что и ПК</li>
-        <li>Разрешение камеры — для сканирования QR-кода</li>
-        <li>Разрешение хранилища — для доступа к файлам</li>
-        <li>Root-права не требуются</li>
-      </ul>
-    </div>
-  </div>
-</div>
-</div>
-
-<hr class="div">
-
-<!-- FAQ -->
-<div style="background:var(--bg2)">
-<div class="sec reveal">
-  <div class="sec-head">
-    <span class="eyebrow">FAQ</span>
-    <h2 class="sec-title">Часто задаваемые вопросы</h2>
-  </div>
-  <div class="faq-list">
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Работает ли приложение без интернета? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">Да, полностью. Всё работает только через локальную Wi-Fi или Ethernet-сеть. Интернет не нужен ни для передачи файлов, ни для чата. Единственное исключение — скачивание самого приложения.</div></div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Какие платформы поддерживаются? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">На данном этапе — только <strong>Android 7.0+</strong> и <strong>Windows 7/8/10/11</strong>. Поддержка iOS, macOS, Linux и других платформ не планируется в ближайшее время. Это осознанное решение для обеспечения стабильной работы на поддерживаемых системах.</div></div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Почему брандмауэр Windows запрашивает разрешение? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">Приложение слушает несколько локальных портов (<code>47777</code>–<code>47790</code>, <code>8765</code>) для обнаружения и передачи данных. При первом запуске правила добавляются автоматически через PowerShell. Если запрос не появился — запустите приложение от имени администратора.</div></div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Как обеспечивается безопасность передачи? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">Все данные шифруются через ECDH P-256 (обмен ключами) + AES-256-GCM (шифрование) ещё до отправки в сеть. Каждая сессия — уникальный ключ. При первом подключении ПК↔ПК требуется PIN-подтверждение. Никто в сети не сможет перехватить или изменить данные.</div></div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Есть ли ограничение по размеру файла? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">Ограничений нет. Можно передавать файлы любого размера. Ограничение — только скорость вашей локальной сети. Папки автоматически упаковываются в ZIP и распаковываются на стороне получателя.</div></div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Что такое Mesh-сеть и для чего она нужна? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">Mesh позволяет передавать данные между устройствами, которые не подключены к одной сети напрямую. Например: ПК-А в сети Wi-Fi #1, ПК-В в сети Wi-Fi #2, ПК-Б подключён к обеим сетям — данные от А до В автоматически пройдут через Б. Маршрутизация через алгоритм BFS, пересчёт каждые 20 секунд.</div></div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Работает ли приложение на Windows 7? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">Да, Windows 7 SP1 специально поддерживается (32-bit и 64-bit). Необходим .NET Framework 4.8 — бесплатно скачайте с официального сайта Microsoft (~65 MB). В Windows 10 и 11 .NET Framework 4.8 уже встроён.</div></div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="faqToggle(this)">Телефон и ПК должны быть в одной Wi-Fi сети? <span class="faq-arr">▼</span></div>
-      <div class="faq-body"><div class="faq-inner">Для прямого подключения — да, они должны быть в одной сети. С функцией Mesh-сети можно передавать данные между разными сетями через промежуточный ПК, подключённый к обеим. Для QR-кода достаточно, чтобы телефон мог достучаться до IP-адреса ПК.</div></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- FOOTER -->
+<!-- ═══════════════════════════════════════
+     ПОДВАЛ
+     ═══════════════════════════════════════ -->
 <footer>
-  <div class="ft-logo">📲 QR File Share</div>
-  <div class="ft-desc">Передача файлов без интернета — Android ↔ Windows. Бесплатно.</div>
-  <div class="ft-links">
-    <a href="https://www.rustore.ru/catalog/app/com.example.qrfileshare" class="ft-link" target="_blank">RuStore</a>
-    <a href="#download" class="ft-link">Скачать</a>
-    <a href="#bench" class="ft-link">Сравнение</a>
-    <a href="#how" class="ft-link">Как работает</a>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="logo-icon" style="width:24px;height:24px;gap:2px">
+        <span style="background:#f25022;border-radius:1px"></span>
+        <span style="background:#7fba00;border-radius:1px"></span>
+        <span style="background:#00a4ef;border-radius:1px"></span>
+        <span style="background:#ffb900;border-radius:1px"></span>
+      </div>
+      <div>
+        <div class="footer-logo">Kronas Project</div>
+        <div class="footer-copy">© 2026 — Бесплатно</div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/Erste1/Kronas_project" target="_blank">GitHub</a>
+      <a href="#programs">Программы</a>
+      <a href="#about">О проекте</a>
+    </div>
   </div>
-  <div class="ft-copy">© 2026 QR File Share — Бесплатно.</div>
 </footer>
 
+
 <script>
-// Android gallery
-const andData = [
-  {img:'and7.png', title:'Отправить и получить файл', desc:'Главный экран — выберите файл для отправки или нажмите «Сканировать QR» для получения.'},
-  {img:'and8.png', title:'Выбор файла', desc:'Выберите любой файл — фото, видео, документ. Нет ограничений по размеру.'},
-  {img:'and9.png', title:'QR-код для передачи', desc:'После выбора файла приложение генерирует QR-код. Покажите другому устройству — передача начнётся мгновенно.'},
-  {img:'and4.png', title:'Wi-Fi Direct', desc:'Передача без роутера и интернета. Телефон подключается напрямую к другому устройству.'},
-  {img:'and3.png', title:'Авто-синхронизация фото', desc:'Сделал фото — через секунды оно уже на ПК. Как AirDrop, только для Android + Windows.'},
-  {img:'and2.png', title:'Режим мёртвой зоны', desc:'Нет Wi-Fi? Телефон становится точкой доступа. Работает в самолёте, кафе, поле — везде.'},
-  {img:'and5.png', title:'11 языков интерфейса', desc:'Выберите язык из 11 доступных. Переключение мгновенное, без перезапуска.'},
-  {img:'and1.png', title:'Экран запуска', desc:'Стильный экран запуска. Приложение готово к работе с первой секунды.'},
-];
-let andActive = 0;
-
-function andGo(idx) {
-  andActive = idx;
-  const img = document.getElementById('andMainImg');
-  img.style.opacity = '0';
-  img.style.transform = 'scale(0.97)';
-  setTimeout(() => {
-    img.src = andData[idx].img;
-    img.style.opacity = '1';
-    img.style.transform = 'scale(1)';
-  }, 220);
-  const cap = document.getElementById('andCaption');
-  cap.style.opacity = '0';
-  setTimeout(() => {
-    cap.innerHTML = `<h3>${andData[idx].title}</h3><p>${andData[idx].desc}</p>`;
-    cap.style.opacity = '1';
-  }, 220);
-  document.querySelectorAll('.and-thumb').forEach((t,i) => t.classList.toggle('active', i===idx));
-  document.querySelectorAll('.and-feat').forEach((f,i) => f.classList.toggle('active-feat', i===idx));
-}
-document.getElementById('andCaption').style.transition = 'opacity .25s';
-document.querySelectorAll('.and-feat')[0].classList.add('active-feat');
-
-// Carousel
-const carouselSlides = [
-  {src:'screen2.png', caption:'Главный экран: отправка файлов, QR-код для Android, обнаружение соседних ПК'},
-  {src:'screen6.png', caption:'Автоматический поиск устройств в сети — UDP broadcast'},
-  {src:'screen3.png', caption:'Зашифрованный чат — список контактов и E2E AES-GCM'},
-  {src:'screen4.png', caption:'Личный чат с историей сообщений'},
-  {src:'screen5.png', caption:'История всех переданных файлов с датой и размером'},
-  {src:'screen1.png', caption:'11 языков интерфейса — переключение без перезапуска'},
-];
-let activeSlide = 0;
-let carouselTimer;
-
-function carouselGo(idx) {
-  activeSlide = (idx + carouselSlides.length) % carouselSlides.length;
-  document.getElementById('carouselTrack').style.transform = `translateX(-${activeSlide * 100}%)`;
-  document.getElementById('carouselCaption').style.opacity = 0;
-  setTimeout(() => {
-    document.getElementById('carouselCaption').textContent = carouselSlides[activeSlide].caption;
-    document.getElementById('carouselCaption').style.opacity = 1;
-  }, 200);
-  document.querySelectorAll('.carousel-thumb').forEach((t,i) => t.classList.toggle('active', i === activeSlide));
-  document.querySelectorAll('.cdot').forEach((d,i) => d.classList.toggle('active', i === activeSlide));
-  resetTimer();
-}
-
-function carouselMove(dir) { carouselGo(activeSlide + dir); }
-
-function resetTimer() {
-  clearInterval(carouselTimer);
-  carouselTimer = setInterval(() => carouselMove(1), 4000);
-}
-
-resetTimer();
-
-// Swipe support
-(function(){
-  const stage = document.querySelector('.carousel-stage');
-  if (!stage) return;
-  let startX = 0;
-  stage.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive:true});
-  stage.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 40) carouselMove(dx < 0 ? 1 : -1);
-  }, {passive:true});
-})();
-
-function openLightbox(src) {
-  const lb = document.getElementById('lightbox');
-  document.getElementById('lightbox-img').src = src;
-  lb.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-function closeLightbox() {
-  document.getElementById('lightbox').style.display = 'none';
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
-
-// Reveal on scroll
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') })
-}, { threshold: 0.07, rootMargin: '0px 0px -30px 0px' });
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-// FAQ accordion
-function faqToggle(el) {
-  const item = el.parentElement;
-  const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(x => x.classList.remove('open'));
-  if (!wasOpen) item.classList.add('open');
-}
+// Анимация появления карточек при скролле
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
